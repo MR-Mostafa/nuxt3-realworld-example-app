@@ -1,0 +1,35 @@
+{
+	"root": true,
+	"parser": "vue-eslint-parser",
+	"parserOptions": {
+		"parser": "@typescript-eslint/parser"
+	},
+	"env": {
+		"browser": true,
+		"es2021": true,
+		"node": true
+	},
+	"plugins": ["@typescript-eslint", "prettier"],
+	"extends": [
+		"@nuxtjs/eslint-config-typescript",
+		"plugin:prettier/recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:vue/vue3-recommended",
+		"@vue/typescript/recommended",
+		"prettier"
+	],
+	"settings": {
+		"import/resolver": {
+			"typescript": {
+				"alwaysTryTypes": true,
+				"project": "./tsconfig.json"
+			}
+		}
+	},
+	"rules": {
+		"no-console": ["error", { "allow": ["warn", "error"] }],
+		"no-alert": "error",
+		"arrow-parens": ["error", "always"],
+		"vue/no-multiple-template-root": "off"
+	}
+}

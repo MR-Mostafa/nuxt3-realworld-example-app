@@ -1,0 +1,12 @@
+{
+	"recommendations": [
+		"Vue.volar",
+		"Vue.vscode-typescript-vue-plugin",
+		"EditorConfig.EditorConfig",
+		"kamikillerto.vscode-colorize",
+		"esbenp.prettier-vscode",
+		"dbaeumer.vscode-eslint",
+		"PKief.material-icon-theme",
+		"wayou.vscode-todo-highlight"
+	]
+}

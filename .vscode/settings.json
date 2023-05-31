@@ -1,0 +1,70 @@
+{
+	"files.autoSave": "off",
+	"editor.codeActionsOnSave": {
+		"source.fixAll": false,
+		"source.fixAll.eslint": true, // this allows ESLint to auto fix on save
+		"source.organizeImports": true
+	},
+	"workbench.iconTheme": "material-icon-theme",
+	"files.insertFinalNewline": true,
+	"search.showLineNumbers": true,
+	"search.useGlobalIgnoreFiles": true,
+	"editor.rulers": [103],
+	"files.eol": "\r\n",
+	"editor.wordWrap": "wordWrapColumn",
+	"editor.wordWrapColumn": 100,
+	"eslint.format.enable": true,
+	"editor.formatOnSave": true,
+	"workbench.tree.indent": 16,
+	"auto-close-tag.excludedTags": ["number", "string", "array", "object", "any"],
+	"todohighlight.isEnable": true,
+	"todohighlight.isCaseSensitive": false,
+	"todohighlight.keywords": [
+		{
+			"text": "@NOTE:",
+			"color": "#fff",
+			"backgroundColor": "#2196f3",
+			"isWholeLine": true
+		},
+		{
+			"text": "@BUG:",
+			"color": "#fff",
+			"backgroundColor": "#be1205",
+			"isWholeLine": true
+		},
+		{
+			"text": "@FixBUG:",
+			"color": "#fff",
+			"backgroundColor": "#4caf50",
+			"isWholeLine": true
+		}
+	],
+	"editor.tokenColorCustomizations": {
+		"comments": "#ffffff60"
+	},
+	"emmet.includeLanguages": {
+		"ejs": "html",
+		"javascript": "javascriptreact",
+		"typescript": "typescriptreact"
+	},
+	"emmet.syntaxProfiles": {
+		"javascript": ["jsx", "html"]
+	},
+	"files.associations": {
+		"*.ejs": "html"
+	},
+	"[html]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[javascript]": {
+		"editor.formatOnSave": true
+	},
+	"explorer.compactFolders": false,
+	"editor.suggestSelection": "first",
+	"files.simpleDialog.enable": true,
+	"editor.formatOnPaste": true,
+	"editor.autoClosingBrackets": "always",
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"emmet.triggerExpansionOnTab": true,
+	"emmet.showExpandedAbbreviation": "always"
+}
