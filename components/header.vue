@@ -62,6 +62,7 @@ import { fasChevronLeft, fasChevronRight } from '@quasar/extras/fontawesome-v5';
 <style lang="scss" module>
 .header {
 	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+	flex: 0 0 auto;
 
 	:global {
 		.q-toolbar {
@@ -157,4 +158,10 @@ import { fasChevronLeft, fasChevronRight } from '@quasar/extras/fontawesome-v5';
 		}
 	} // :global
 } // .dropdownMenu
+</style>
+
+<style lang="scss" scoped>
+.q-header--hidden {
+	transform: translateY(-130%) !important;
+}
 </style>
