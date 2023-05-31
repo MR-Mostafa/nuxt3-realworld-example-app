@@ -17,7 +17,7 @@ import { fasChevronLeft, fasChevronRight } from '@quasar/extras/fontawesome-v5';
 			<div class="search-wrapper q-px-lg col-grow">
 				<q-input filled dense borderless dark model-value="" name="search" type="text" inputmode="text" placeholder="Explore...">
 					<template #prepend>
-						<IconsSearch />
+						<SearchIcon />
 					</template>
 				</q-input>
 			</div>
@@ -33,7 +33,7 @@ import { fasChevronLeft, fasChevronRight } from '@quasar/extras/fontawesome-v5';
 			<div class="flex q-px-md" :class="$style.buttonGroup">
 				<q-btn-dropdown flat rounded auto-close class="user-btn" :content-class="$style.dropdownMenu">
 					<template #label>
-						<IconsUser />
+						<UserIcon />
 					</template>
 
 					<q-list class="rounded-borders">
@@ -52,7 +52,7 @@ import { fasChevronLeft, fasChevronRight } from '@quasar/extras/fontawesome-v5';
 				</q-btn-dropdown>
 
 				<q-btn flat rounded class="github-btn" href="#" target="_blank" rel="noopener noreferrer">
-					<IconsGithub />
+					<GithubIcon />
 				</q-btn>
 			</div>
 		</q-toolbar>
