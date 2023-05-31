@@ -1,0 +1,25 @@
+.q-input {
+	$bg-highlighted: #3f455dd2;
+
+	&.q-field--highlighted {
+		.q-field__control {
+			background-color: $bg-highlighted;
+		}
+	} // &.q-field--highlighted
+
+	.q-field__control {
+		border-radius: 6px;
+		background-color: #33394f;
+		transition: background-color 0.2s ease-in-out;
+
+		&:hover,
+		&:focus {
+			background-color: $bg-highlighted;
+		}
+
+		&::before,
+		&::after {
+			display: none !important;
+		}
+	} // .q-field__control
+} // .q-field
