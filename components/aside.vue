@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { fasHashtag } from '@quasar/extras/fontawesome-v5';
 </script>
+
 <template>
 	<aside :class="$style.aside">
 		<section :class="$style.popularTags">
@@ -9,7 +10,7 @@ import { fasHashtag } from '@quasar/extras/fontawesome-v5';
 				<MedalIcon />
 			</h6>
 
-			<div class="flex row wrap q-gutter-sm">
+			<div v-if="true" class="flex row wrap q-gutter-sm">
 				<q-btn
 					rounded
 					no-caps
@@ -22,6 +23,8 @@ import { fasHashtag } from '@quasar/extras/fontawesome-v5';
 					class="text-weight-regular"
 				/>
 			</div>
+
+			<ErrorBox v-else />
 		</section>
 	</aside>
 </template>
