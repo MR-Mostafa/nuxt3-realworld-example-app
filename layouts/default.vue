@@ -1,8 +1,8 @@
 <template>
-	<q-layout view="hHh lpR fFf" class="flex column">
+	<q-layout view="hHh lpR fFf" class="flex column no-wrap">
 		<Header />
 
-		<q-page-container class="q-my-xl q-px-xl">
+		<q-page-container class="q-mt-xl q-pb-xl q-px-xl overflow-hidden">
 			<slot />
 		</q-page-container>
 
