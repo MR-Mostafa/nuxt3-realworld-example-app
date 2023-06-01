@@ -3,7 +3,15 @@
 
 	&.q-field--highlighted {
 		.q-field__control {
-			background-color: $bg-highlighted;
+			background-color: $bg-highlighted !important;
+		}
+
+		input {
+			&::placeholder {
+				color: rgba(255, 255, 255, 0.5) !important;
+				font-weight: 300;
+				opacity: 1;
+			}
 		}
 	} // &.q-field--highlighted
 
@@ -14,12 +22,22 @@
 
 		&:hover,
 		&:focus {
-			background-color: $bg-highlighted;
+			background-color: $bg-highlighted !important;
 		}
 
 		&::before,
 		&::after {
 			display: none !important;
 		}
+
+		input {
+			color: #fff !important;
+		}
 	} // .q-field__control
+
+	.q-field__control,
+	.q-field__label {
+		color: rgba(255, 255, 255, 0.6) !important;
+		font-weight: 300;
+	} // .q-field__label
 } // .q-field
