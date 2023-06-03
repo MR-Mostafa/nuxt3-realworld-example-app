@@ -10,12 +10,12 @@ const feedTab = useState<'global' | 'local'>('feedTabs', () => 'global');
 			</q-tabs>
 			<q-tab-panels v-model="feedTab" animated>
 				<q-tab-panel name="global" class="global-article">
-					<Article />
-					<Article />
-					<Article />
-					<Article />
-					<Article />
-					<Article />
+					<ShortArticle />
+					<ShortArticle />
+					<ShortArticle />
+					<ShortArticle />
+					<ShortArticle />
+					<ShortArticle />
 
 					<div class="q-pt-lg">
 						<Pagination />
