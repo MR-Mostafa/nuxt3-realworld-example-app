@@ -15,8 +15,8 @@
 		.q-btn {
 			font-size: 18px;
 			padding: 3px 2px;
-			background-color: #d9d9d9;
-			color: #33394f !important;
+			background-color: #33394f;
+			color: #d9d9d9 !important;
 		}
 
 		.bg-primary {
