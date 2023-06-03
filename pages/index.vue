@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const feedTab = useState<'global' | 'local'>('feedTabs', () => 'global');
 </script>
+
 <template>
 	<div class="flex row q-gutter-x-lg">
 		<main class="col" :class="$style.main">
