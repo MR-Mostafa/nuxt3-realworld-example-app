@@ -3,7 +3,7 @@ import { fasHashtag } from '@quasar/extras/fontawesome-v5';
 </script>
 
 <template>
-	<q-list tag="ul" dense :class="$style.tagsWrapper" class="flex inline row no-wrap text-body2 items-center justify-end q-pl-lg">
+	<q-list tag="ul" dense :class="$style.tagsWrapper" class="flex inline row no-wrap text-body2 items-center justify-end">
 		<q-item dense tag="li">
 			<q-btn dense flat no-caps :icon="fasHashtag" label="tag 1" />
 		</q-item>

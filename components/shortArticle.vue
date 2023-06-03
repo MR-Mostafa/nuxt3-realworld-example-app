@@ -18,7 +18,7 @@
 
 			<footer class="q-pt-lg flex row items-center justify-between">
 				<BtnMore />
-				<ArticleTags />
+				<ArticleTags class="q-pl-lg" />
 			</footer>
 		</q-card-section>
 	</q-card>
