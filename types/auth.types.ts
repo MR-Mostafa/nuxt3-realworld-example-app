@@ -7,3 +7,14 @@ export interface User {
 		image: string;
 	};
 }
+
+export interface UserLogin {
+	email: string;
+	password: string;
+}
+
+export interface RegisterLogin {
+	username: string;
+	email: string;
+	password: string;
+}
