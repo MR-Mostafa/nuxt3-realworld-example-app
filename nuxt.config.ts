@@ -20,6 +20,7 @@ export default defineNuxtConfig({
 			'nuxt-quasar-ui',
 			{
 				sassVariables: '/assets/styles/_quasar.variables.scss',
+				plugins: ['Notify'],
 				config: {
 					dark: true,
 					brand: {
