@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { fasChevronLeft, fasChevronRight } from '@quasar/extras/fontawesome-v5';
 import { onMounted } from 'vue';
-import { useAPI } from '~/composables/UseAPI';
+import { useAPI } from '~/composables';
 import { authState } from '~/store/auth';
 import { User } from '~/types';
 

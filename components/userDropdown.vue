@@ -2,7 +2,7 @@
 import { navigateTo } from '#app';
 import { fasEdit, fasSignOutAlt, fasUser, fasUserEdit } from '@quasar/extras/fontawesome-v5';
 import { ref } from 'vue';
-import { useToken } from '~/composables/useToken';
+import { useToken } from '~/composables';
 import { authState } from '~/store/auth';
 
 const auth = authState();
@@ -16,7 +16,7 @@ const handleIsShownDropdown = () => {
 const handleSignOut = async () => {
 	userToken.set(undefined);
 	auth.set(undefined);
-	await navigateTo('/');
+	await navigateTo('/auth');
 };
 </script>
 

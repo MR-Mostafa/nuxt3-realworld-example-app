@@ -1,6 +1,6 @@
 import { defu } from 'defu';
 import { useFetch, useRuntimeConfig, type AsyncData, type UseFetchOptions } from 'nuxt/app';
-import { useToken } from '~/composables/useToken';
+import { useToken } from '~/composables';
 import { ONE_WEEK } from '~/constants';
 
 interface ErrorType {
