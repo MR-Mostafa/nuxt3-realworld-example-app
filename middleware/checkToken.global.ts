@@ -1,15 +1,8 @@
 import { defineNuxtRouteMiddleware } from '#imports';
-import { useAPI, useToken } from '~/composables';
-import { authState } from '~/store';
-import { User } from '~/types';
+import { useToken } from '~/composables';
 
-export default defineNuxtRouteMiddleware(async () => {
+export default defineNuxtRouteMiddleware(() => {
 	const token = useToken();
 
-	if (!token) return;
-
-	const { data } = await useAPI<User>('/user');
-	const auth = authState();
-
-	auth.set(data.value || undefined);
+	if (!token) return '';
 });
