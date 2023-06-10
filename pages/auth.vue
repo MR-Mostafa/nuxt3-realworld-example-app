@@ -26,9 +26,9 @@ definePageMeta({
 		function () {
 			const userAuth = authState();
 
-			if (!userAuth.get.value) return;
-
-			return navigateTo(`/@${userAuth.get.value.username}`, { redirectCode: 307 });
+			if (userAuth.get.value) {
+				return navigateTo(`/@${userAuth.get.value.username}`);
+			}
 		},
 	],
 });
