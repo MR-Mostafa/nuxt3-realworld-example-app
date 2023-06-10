@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { navigateTo } from '#app';
 import { fasCheckSquare, fasExclamationTriangle } from '@quasar/extras/fontawesome-v5';
-import { computed, onBeforeMount, ref } from 'vue';
+import { definePageMeta } from 'nuxt/dist/pages/runtime';
+import { computed, ref } from 'vue';
 import { useAPI, useNotify } from '~/composables';
 import { DEBOUNCE_INPUT_TIME, EMAIL_REGEX } from '~/constants';
 import { authState } from '~/store';
 import { RegisterLogin, User, UserLogin } from '~/types';
 
 const auth = authState();
-const loginData = ref<UserLogin>({ email: '', password: '' });
+const loginData = ref<UserLogin>({ email: 'pihab15036@vaband.com', password: 'pihab15036' });
 const registerData = ref<RegisterLogin>({ username: '', email: '', password: '' });
 const isLoading = ref(false);
 
@@ -20,10 +21,16 @@ const isActiveForm = computed(() => {
 	};
 });
 
-onBeforeMount(() => {
-	if (auth.get.value) {
-		navigateTo(`/@${auth.get.value.username}`);
-	}
+definePageMeta({
+	middleware: [
+		function () {
+			const userAuth = authState();
+
+			if (!userAuth.get.value) return;
+
+			return navigateTo(`/@${userAuth.get.value.username}`, { redirectCode: 307 });
+		},
+	],
 });
 
 const handleSubmitForm = async (obj: Record<string, string>) => {
@@ -33,43 +40,47 @@ const handleSubmitForm = async (obj: Record<string, string>) => {
 
 	if (hasEmptyInput) return;
 
-	isLoading.value = true;
-
 	const url = isActiveForm.value(loginData.value) ? '/users/login' : '/users';
-	const errorMsg = 'There has been an error in the input forms, please check them again.';
-	const successfulMsg = `${isActiveForm.value(loginData.value) ? 'Login' : 'Registration'} has been successful`;
+
+	isLoading.value = true;
 
 	return await useAPI<User>(url, { method: 'POST', body: { user: obj } })
 		.then((res) => {
-			if (res.error.value) {
+			const data = res.data.value;
+			const error = res.error.value;
+
+			if (data && data.user) {
+				auth.set(data);
+
+				useNotify({
+					color: 'green-8',
+					message: `${isActiveForm.value(loginData.value) ? 'Login' : 'Registration'} has been successful`,
+					type: 'positive',
+					icon: fasCheckSquare,
+				});
+				navigateTo(`/@${data.user.username}`);
+			}
+
+			if (error && error.message) {
 				useNotify({
 					color: 'red-8',
-					message: errorMsg,
+					message: JSON.parse(error.message).join('<br />'),
 					type: 'negative',
 					icon: fasExclamationTriangle,
 				});
 			}
 
-			if (res.data.value) {
-				auth.set(res.data.value);
-				useNotify({
-					color: 'green-8',
-					message: successfulMsg,
-					type: 'positive',
-					icon: fasCheckSquare,
-				});
-				navigateTo(`/@${res.data.value.user.username}`);
-			}
-
 			return res;
 		})
-		.catch(() => {
+		.catch((err) => {
 			useNotify({
 				color: 'red-8',
 				message: 'There has been an error in the input forms, please check them again.',
 				type: 'negative',
 				icon: fasExclamationTriangle,
 			});
+
+			console.error(err);
 		})
 		.finally(() => {
 			isLoading.value = false;
