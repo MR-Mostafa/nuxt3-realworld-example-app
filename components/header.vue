@@ -1,20 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from '#imports';
 import { fasChevronLeft, fasChevronRight } from '@quasar/extras/fontawesome-v5';
-import { useAPI } from '~/composables';
-import { authState } from '~/store/auth';
-import { User } from '~/types';
-
-const auth = authState();
-
-const { execute: getUserDataByToken } = await useAPI<User>('/user').then((res) => {
-	auth.set(res.data.value || undefined);
-	return res;
-});
-
-onMounted(() => {
-	getUserDataByToken();
-});
 </script>
 
 <template>
