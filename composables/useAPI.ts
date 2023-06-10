@@ -1,5 +1,6 @@
+import { type UseFetchOptions } from '#app';
+import { createError, useFetch, useRuntimeConfig } from '#imports';
 import { defu } from 'defu';
-import { createError, useFetch, useRuntimeConfig, type UseFetchOptions } from 'nuxt/app';
 import { useToken } from '~/composables';
 import { ONE_WEEK } from '~/constants';
 

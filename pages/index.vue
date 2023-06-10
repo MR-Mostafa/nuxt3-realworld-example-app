@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useState } from 'nuxt/app';
+import { useState } from '#imports';
 
 const feedTab = useState<'global' | 'local'>('feedTabs', () => 'global');
 </script>

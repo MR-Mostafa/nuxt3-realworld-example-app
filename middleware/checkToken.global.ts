@@ -1,4 +1,4 @@
-import { defineNuxtRouteMiddleware } from 'nuxt/app';
+import { defineNuxtRouteMiddleware } from '#imports';
 import { useAPI, useToken } from '~/composables';
 import { authState } from '~/store';
 import { User } from '~/types';

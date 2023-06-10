@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { navigateTo } from '#app';
+import { computed, definePageMeta, navigateTo, ref } from '#imports';
 import { fasCheckSquare, fasExclamationTriangle } from '@quasar/extras/fontawesome-v5';
-import { definePageMeta } from 'nuxt/dist/pages/runtime';
-import { computed, ref } from 'vue';
 import { useAPI, useNotify } from '~/composables';
 import { DEBOUNCE_INPUT_TIME, EMAIL_REGEX } from '~/constants';
 import { authState } from '~/store';

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { navigateTo } from '#app';
+import { ref } from '#imports';
 import { fasEdit, fasSignOutAlt, fasUser, fasUserEdit } from '@quasar/extras/fontawesome-v5';
-import { ref } from 'vue';
 import { useToken } from '~/composables';
 import { authState } from '~/store/auth';
 

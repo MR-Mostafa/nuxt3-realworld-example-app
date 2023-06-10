@@ -1,4 +1,5 @@
-import { useCookie, useRuntimeConfig, type CookieOptions } from 'nuxt/app';
+import { type CookieOptions } from '#app';
+import { useCookie, useRuntimeConfig } from '#imports';
 
 export const useToken = <T = string | null | undefined>(options: CookieOptions<T> = {}) => {
 	const config = useRuntimeConfig();

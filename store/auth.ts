@@ -1,5 +1,4 @@
-import { useState } from 'nuxt/app';
-import { computed } from 'vue';
+import { computed, useState } from '#imports';
 import { SimpleFlatten, User } from '~/types';
 
 export const authState = () => {
