@@ -1,5 +1,6 @@
 import { Notify } from 'quasar';
 import { ONE_SECOND } from '~/constants';
+
 interface useNotifyProps {
 	message: string;
 	icon: string;
@@ -14,6 +15,7 @@ export const useNotify = ({ message, icon, color, type }: useNotifyProps) => {
 		multiLine: true,
 		badgeClass: 'hidden',
 		position: 'bottom-left',
+		html: true,
 		message,
 		icon,
 		color,
