@@ -19,7 +19,7 @@ definePageMeta({
 });
 
 const auth = authState();
-const loginData = ref<UserLogin>({ email: 'ssdf@dsafsad.com', password: 'asd' });
+const loginData = ref<UserLogin>({ email: '', password: '' });
 const registerData = ref<RegisterLogin>({ username: '', email: '', password: '' });
 const isLoading = ref(false);
 
