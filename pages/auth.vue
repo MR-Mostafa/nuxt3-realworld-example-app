@@ -6,6 +6,18 @@ import { DEBOUNCE_INPUT_TIME, EMAIL_REGEX } from '~/constants';
 import { authState } from '~/store';
 import { RegisterLogin, User, UserLogin } from '~/types';
 
+definePageMeta({
+	middleware: [
+		function () {
+			const userAuth = authState();
+
+			if (userAuth.get.value) {
+				return navigateTo(`/@${userAuth.get.value.username}`);
+			}
+		},
+	],
+});
+
 const auth = authState();
 const loginData = ref<UserLogin>({ email: '', password: '' });
 const registerData = ref<RegisterLogin>({ username: '', email: '', password: '' });
@@ -17,18 +29,6 @@ const isActiveForm = computed(() => {
 			return value.length > 0;
 		});
 	};
-});
-
-definePageMeta({
-	middleware: [
-		function () {
-			const userAuth = authState();
-
-			if (userAuth.get.value) {
-				return navigateTo(`/@${userAuth.get.value.username}`);
-			}
-		},
-	],
 });
 
 const handleSubmitForm = async (obj: Record<string, string>) => {
@@ -43,7 +43,7 @@ const handleSubmitForm = async (obj: Record<string, string>) => {
 	isLoading.value = true;
 
 	return await useAPI<User>(url, { method: 'POST', body: { user: obj } })
-		.then((res) => {
+		.then(async (res) => {
 			const data = res.data.value;
 			const error = res.error.value;
 
@@ -56,7 +56,8 @@ const handleSubmitForm = async (obj: Record<string, string>) => {
 					type: 'positive',
 					icon: fasCheckSquare,
 				});
-				navigateTo(`/@${data.user.username}`);
+
+				await navigateTo(`/@${data.user.username}`);
 			}
 
 			if (error && error.message) {
