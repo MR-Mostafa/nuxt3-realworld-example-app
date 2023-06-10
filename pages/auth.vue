@@ -7,7 +7,7 @@ import { authState } from '~/store';
 import { RegisterLogin, User, UserLogin } from '~/types';
 
 const auth = authState();
-const loginData = ref<UserLogin>({ email: 'pihab15036@vaband.com', password: 'pihab15036' });
+const loginData = ref<UserLogin>({ email: '', password: '' });
 const registerData = ref<RegisterLogin>({ username: '', email: '', password: '' });
 const isLoading = ref(false);
 
