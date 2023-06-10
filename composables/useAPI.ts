@@ -1,15 +1,13 @@
 import { defu } from 'defu';
-import { useFetch, useRuntimeConfig, type AsyncData, type UseFetchOptions } from 'nuxt/app';
+import { createError, useFetch, useRuntimeConfig, type UseFetchOptions } from 'nuxt/app';
 import { useToken } from '~/composables';
 import { ONE_WEEK } from '~/constants';
 
 interface ErrorType {
-	errors: {
-		body: string[];
-	};
+	errors: Record<string, string[]>;
 }
 
-export function useAPI<T = unknown, E = ErrorType>(url: string | (() => string), userOptions: UseFetchOptions<T> = {}) {
+export function useAPI<T = unknown>(url: string | (() => string), userOptions: UseFetchOptions<T> = {}) {
 	const expireDate = new Date(Date.now() + ONE_WEEK);
 	const config = useRuntimeConfig();
 	const userToken = useToken({ expires: expireDate });
@@ -26,7 +24,12 @@ export function useAPI<T = unknown, E = ErrorType>(url: string | (() => string),
 			const getToken = userToken.get();
 
 			if (getToken) {
-				options.headers = { ...options.headers, Authorization: getToken };
+				options.headers = {
+					...options.headers,
+					'Authorization': getToken,
+					'Accept': 'application/json',
+					'Content-type': 'application/json',
+				};
 			}
 		},
 
@@ -37,9 +40,23 @@ export function useAPI<T = unknown, E = ErrorType>(url: string | (() => string),
 				userToken.set(token);
 			}
 		},
+
+		onResponseError({ response }) {
+			const statusCode = response.status || 500;
+			const statusMessage = response.statusText || '';
+			const errorsMsg = (response._data || {}) as ErrorType;
+
+			const errorEntries = Object.entries(errorsMsg.errors);
+
+			const message = errorEntries.reduce((acc: string[], [key, value]) => {
+				return [...acc, ...value.map((item) => `${key} ${item}`)];
+			}, []);
+
+			throw createError({ statusCode, statusMessage, message: JSON.stringify(message) });
+		},
 	};
 
 	const options = defu(userOptions, defaultOptions) as UseFetchOptions<T>;
 
-	return useFetch(url, options) as AsyncData<T, E>;
+	return useFetch(url, options);
 }
