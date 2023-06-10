@@ -2,7 +2,7 @@
 import { computed, definePageMeta, navigateTo, ref } from '#imports';
 import { fasCheckSquare, fasExclamationTriangle } from '@quasar/extras/fontawesome-v5';
 import { useAPI, useNotify } from '~/composables';
-import { DEBOUNCE_INPUT_TIME, EMAIL_REGEX } from '~/constants';
+import { DEBOUNCE_INPUT_TIME, EMAIL_REGEX, ERROR_SEPARATOR } from '~/constants';
 import { authState } from '~/store';
 import { RegisterLogin, User, UserLogin } from '~/types';
 
@@ -19,7 +19,7 @@ definePageMeta({
 });
 
 const auth = authState();
-const loginData = ref<UserLogin>({ email: '', password: '' });
+const loginData = ref<UserLogin>({ email: 'ssdf@dsafsad.com', password: 'asd' });
 const registerData = ref<RegisterLogin>({ username: '', email: '', password: '' });
 const isLoading = ref(false);
 
@@ -42,7 +42,7 @@ const handleSubmitForm = async (obj: Record<string, string>) => {
 
 	isLoading.value = true;
 
-	return await useAPI<User>(url, { method: 'POST', body: { user: obj } })
+	return await useAPI<User>(url, { method: 'POST', body: { user: obj }, timeout: 7000 })
 		.then(async (res) => {
 			const data = res.data.value;
 			const error = res.error.value;
@@ -63,7 +63,7 @@ const handleSubmitForm = async (obj: Record<string, string>) => {
 			if (error && error.message) {
 				useNotify({
 					color: 'red-8',
-					message: JSON.parse(error.message).join('<br />'),
+					message: error.message.split(ERROR_SEPARATOR).join('<br />'),
 					type: 'negative',
 					icon: fasExclamationTriangle,
 				});

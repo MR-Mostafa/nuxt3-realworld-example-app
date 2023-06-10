@@ -2,21 +2,33 @@ import { type UseFetchOptions } from '#app';
 import { createError, useFetch, useRuntimeConfig } from '#imports';
 import { defu } from 'defu';
 import { useToken } from '~/composables';
-import { ONE_WEEK } from '~/constants';
+import { ERROR_SEPARATOR, ONE_WEEK } from '~/constants';
 
 interface ErrorType {
 	errors: Record<string, string[]>;
 }
 
-export function useAPI<T = unknown>(url: string | (() => string), userOptions: UseFetchOptions<T> = {}) {
+type FetchOptions<T> = UseFetchOptions<T> & { timeout?: number };
+
+export function useAPI<T = unknown>(url: string | (() => string), userOptions: FetchOptions<T> = {}) {
 	const expireDate = new Date(Date.now() + ONE_WEEK);
 	const config = useRuntimeConfig();
 	const userToken = useToken({ expires: expireDate });
 
-	const defaultOptions: UseFetchOptions<T> = {
-		baseURL: config.public.baseUrl,
+	/**
+	 * Aborting a fetch with timeout
+	 * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal#aborting_a_fetch_with_timeout_or_explicit_abort|Aborting a fetch}
+	 */
+	const controller = new AbortController();
+	const timeoutId = setTimeout(() => {
+		controller.abort(createError({ statusCode: 408, statusMessage: 'aborted', message: 'This request has been automatically aborted.' }));
+	}, userOptions.timeout);
+
+	const defaultOptions: FetchOptions<T> = {
+		baseURL: `${config.public.baseUrl}`,
 		method: 'GET',
 		retry: 3,
+		signal: userOptions.timeout ? controller.signal : undefined,
 
 		// cache request
 		key: typeof url === 'string' ? url : url(),
@@ -53,11 +65,15 @@ export function useAPI<T = unknown>(url: string | (() => string), userOptions: U
 				return [...acc, ...value.map((item) => `${key} ${item}`)];
 			}, []);
 
-			throw createError({ statusCode, statusMessage, message: JSON.stringify(message) });
+			throw createError({ statusCode, statusMessage, message: message.join(ERROR_SEPARATOR) });
 		},
 	};
 
 	const options = defu(userOptions, defaultOptions) as UseFetchOptions<T>;
 
-	return useFetch(url, options);
+	return useFetch(url, options).finally(() => {
+		if (userOptions.timeout && timeoutId) {
+			clearTimeout(timeoutId);
+		}
+	});
 }

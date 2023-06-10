@@ -5,3 +5,5 @@ export const ONE_DAY = ONE_HOUR * 24;
 export const ONE_WEEK = ONE_DAY * 7;
 
 export const DEBOUNCE_INPUT_TIME = 150;
+
+export const ERROR_SEPARATOR = '_::_';
