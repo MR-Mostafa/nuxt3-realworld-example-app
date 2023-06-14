@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useState } from '#imports';
+
 const feedTab = useState<'global' | 'local'>('feedTabs', () => 'global');
 </script>
 

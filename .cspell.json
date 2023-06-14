@@ -4,6 +4,6 @@
 	"ignorePaths": ["node_modules/**", "package.json", "dist"],
 	"dictionaries": ["typescript", "node", "html", "css"],
 	"allowCompoundWords": true,
-	"words": ["uuidv4", "pinia", "nuxt", "nuxtjs", "vuejs", "favorited"],
+	"words": ["uuidv4", "pinia", "nuxt", "nuxtjs", "vuejs", "favorited", "defu", "pihab"],
 	"ignoreWords": []
 }

@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
 	css: ['@/assets/styles/styles.scss'],
+
 	app: {
 		head: {
 			charset: 'utf-8',
@@ -15,11 +16,13 @@ export default defineNuxtConfig({
 			],
 		},
 	},
+
 	modules: [
 		[
 			'nuxt-quasar-ui',
 			{
 				sassVariables: '/assets/styles/_quasar.variables.scss',
+				plugins: ['Notify'],
 				config: {
 					dark: true,
 					brand: {
@@ -31,5 +34,21 @@ export default defineNuxtConfig({
 		],
 		'@nuxtjs/eslint-module',
 	],
+
 	components: [{ path: '~/components/icons', pathPrefix: false }, '~/components'],
+
+	runtimeConfig: {
+		public: {
+			cookieName: process.env.COOKIE_TOKEN_NAME,
+			baseUrl: process.env.BASE_URL,
+		},
+	},
+
+	imports: {
+		autoImport: false,
+	},
+
+	devtools: {
+		enabled: true,
+	},
 });

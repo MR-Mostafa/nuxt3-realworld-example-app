@@ -1,43 +1,204 @@
+<script setup lang="ts">
+import { computed, definePageMeta, navigateTo, ref } from '#imports';
+import { fasCheckSquare, fasExclamationTriangle } from '@quasar/extras/fontawesome-v5';
+import { useAPI, useNotify } from '~/composables';
+import { DEBOUNCE_INPUT_TIME, EMAIL_REGEX, ERROR_SEPARATOR } from '~/constants';
+import { authState } from '~/store';
+import { RegisterLogin, User, UserLogin } from '~/types';
+
+definePageMeta({
+	middleware: ['redirect-to-profile'],
+});
+
+const auth = authState();
+const loginData = ref<UserLogin>({ email: '', password: '' });
+const registerData = ref<RegisterLogin>({ username: '', email: '', password: '' });
+const isLoading = ref(false);
+
+const isActiveForm = computed(() => {
+	return (obj: Record<string, string>) => {
+		return Object.entries(obj).some(([_key, value]) => {
+			return value.length > 0;
+		});
+	};
+});
+
+const handleSubmitForm = async (obj: Record<string, string>) => {
+	const hasEmptyInput = Object.entries(obj).some(([_key, value]) => {
+		return value.length === 0;
+	});
+
+	if (hasEmptyInput) return;
+
+	const url = isActiveForm.value(loginData.value) ? '/users/login' : '/users';
+
+	isLoading.value = true;
+
+	return await useAPI<User>(url, { method: 'POST', body: { user: obj }, timeout: 7000 })
+		.then(async (res) => {
+			const data = res.data.value;
+			const error = res.error.value;
+
+			if (data && data.user) {
+				auth.set(data);
+
+				useNotify({
+					color: 'green-8',
+					message: `${isActiveForm.value(loginData.value) ? 'Login' : 'Registration'} has been successful`,
+					type: 'positive',
+					icon: fasCheckSquare,
+				});
+
+				await navigateTo(`/@${data.user.username}`);
+			}
+
+			if (error && error.message) {
+				useNotify({
+					color: 'red-8',
+					message: error.message.split(ERROR_SEPARATOR).join('<br />'),
+					type: 'negative',
+					icon: fasExclamationTriangle,
+				});
+			}
+
+			return res;
+		})
+		.catch((err) => {
+			useNotify({
+				color: 'red-8',
+				message: 'An error has occurred, please check them again.',
+				type: 'negative',
+				icon: fasExclamationTriangle,
+			});
+
+			console.error(err);
+		})
+		.finally(() => {
+			isLoading.value = false;
+		});
+};
+</script>
+
 <template>
 	<Head>
 		<Title>Auth Page</Title>
 	</Head>
 
 	<div class="flex row justify-between items-start q-col-gutter-x-lg" :class="$style.authPage">
-		<form id="login" class="col-6 q-gutter-lg q-pr-xl">
+		<!--
+			Login Form
+		-->
+		<q-form id="login" class="col-6 q-gutter-lg q-pr-xl" autocomplete="off" @submit.prevent="handleSubmitForm(loginData)">
 			<h3 class="text-weight-medium text-h4">Login</h3>
-			<q-input standout model-value="" name="email" type="email" inputmode="email" label="Email" placeholder="Enter Your Email Address" />
+			<q-input
+				v-model="loginData.email"
+				standout
+				name="email"
+				type="text"
+				inputmode="email"
+				label="Email"
+				placeholder="Enter Your Email Address"
+				lazy-rules
+				:rules="[
+					(val) => (val && val.length > 0) || 'Please enter your email address',
+					(val) => EMAIL_REGEX.test(val) || 'Please enter a valid email address',
+				]"
+				no-error-icon
+				:debounce="DEBOUNCE_INPUT_TIME"
+				:disable="isActiveForm(registerData) || isLoading"
+			/>
 
 			<q-input
+				v-model="loginData.password"
 				standout
-				model-value=""
 				name="password"
 				type="password"
 				inputmode="text"
 				label="Password"
 				placeholder="Enter Your password"
+				lazy-rules
+				:rules="[(val) => (val && val.length > 0) || 'Please enter your password']"
+				no-error-icon
+				:debounce="DEBOUNCE_INPUT_TIME"
+				:disable="isActiveForm(registerData) || isLoading"
 			/>
-		</form>
+		</q-form>
 
-		<form id="register" class="col-6 q-gutter-lg q-pl-xl" autocomplete="off">
+		<!--
+			Register Form
+		-->
+		<q-form id="register" class="col-6 q-gutter-lg q-pl-xl" autocomplete="off" @submit.prevent="handleSubmitForm(registerData)">
 			<h3 class="text-weight-medium text-h4">Register</h3>
-			<q-input standout model-value="" name="username" type="text" inputmode="text" label="User Name" placeholder="Enter Your User Name" />
+			<q-input
+				v-model="registerData.username"
+				standout
+				name="username"
+				type="text"
+				inputmode="text"
+				label="User Name"
+				placeholder="Enter Your User Name"
+				lazy-rules
+				:rules="[
+					(val) => (val && val.length > 0) || 'Please enter your username',
+					(val) => (val && val.length >= 5) || 'More than 5 characters are required in the username',
+				]"
+				no-error-icon
+				:debounce="DEBOUNCE_INPUT_TIME"
+				:disable="isActiveForm(loginData) || isLoading"
+			/>
 
-			<q-input standout model-value="" name="email" type="email" inputmode="email" label="Email" placeholder="Enter Your Email Address" />
+			<q-input
+				v-model="registerData.email"
+				standout
+				name="email"
+				type="text"
+				inputmode="email"
+				label="Email"
+				placeholder="Enter Your Email Address"
+				lazy-rules
+				:rules="[
+					(val) => (val && val.length > 0) || 'Please enter your email address',
+					(val) => EMAIL_REGEX.test(val) || 'Please enter a valid email address',
+				]"
+				no-error-icon
+				:debounce="DEBOUNCE_INPUT_TIME"
+				:disable="isActiveForm(loginData) || isLoading"
+			/>
 
-			<q-input standout model-value="" name="password" type="text" inputmode="text" label="Password" placeholder="Enter Your password" />
-		</form>
+			<q-input
+				v-model="registerData.password"
+				standout
+				name="password"
+				type="password"
+				inputmode="text"
+				label="Password"
+				placeholder="Enter Your password"
+				lazy-rules
+				:rules="[
+					(val) => (val && val.length > 0) || 'Please enter your password',
+					(val) => (val && val.length >= 5) || 'More than 5 characters are required in the password',
+				]"
+				no-error-icon
+				:debounce="DEBOUNCE_INPUT_TIME"
+				:disable="isActiveForm(loginData) || isLoading"
+			/>
+		</q-form>
 	</div>
 
+	<!--
+		Submit Form
+	-->
 	<div class="q-pt-xl text-center">
 		<q-btn
 			no-caps
-			label="Login/Register"
+			:label="isActiveForm(loginData) ? 'Login' : isActiveForm(registerData) ? 'Register' : 'Login/Register'"
 			type="submit"
 			size="lg"
 			class="login-register full-width"
 			:class="$style.loginRegisterBtn"
-			form="register"
+			:form="isActiveForm(loginData) ? 'login' : 'register'"
+			:disable="(!isActiveForm(loginData) && !isActiveForm(registerData)) || isLoading"
+			:loading="isLoading"
 		/>
 	</div>
 </template>

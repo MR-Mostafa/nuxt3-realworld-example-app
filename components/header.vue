@@ -31,25 +31,7 @@ import { fasChevronLeft, fasChevronRight } from '@quasar/extras/fontawesome-v5';
 			</nav>
 
 			<div class="flex q-px-md" :class="$style.buttonGroup">
-				<q-btn-dropdown flat rounded auto-close class="user-btn" :content-class="$style.dropdownMenu">
-					<template #label>
-						<UserIcon />
-					</template>
-
-					<q-list class="rounded-borders">
-						<q-item v-ripple clickable>
-							<q-item-section> Item </q-item-section>
-						</q-item>
-
-						<q-item v-ripple clickable>
-							<q-item-section> Item </q-item-section>
-						</q-item>
-
-						<q-item v-ripple clickable>
-							<q-item-section> Item </q-item-section>
-						</q-item>
-					</q-list>
-				</q-btn-dropdown>
+				<UserDropdown />
 
 				<q-btn flat rounded class="github-btn" href="#" target="_blank" rel="noopener noreferrer">
 					<GithubIcon />
@@ -124,14 +106,24 @@ import { fasChevronLeft, fasChevronRight } from '@quasar/extras/fontawesome-v5';
 			height: 48px;
 			box-sizing: border-box;
 			padding: 12px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+
 			&:not(:first-child) {
 				margin-left: 15px;
 			}
 		}
 
+		img {
+			width: 34px !important;
+			height: 34px !important;
+			object-fit: contain;
+		}
+
 		svg {
-			width: 100% !important;
-			height: 100% !important;
+			width: 32px !important;
+			height: 32px !important;
 		}
 
 		.q-icon {
@@ -143,21 +135,6 @@ import { fasChevronLeft, fasChevronRight } from '@quasar/extras/fontawesome-v5';
 		}
 	} // :global
 } // .buttonGroup
-
-.dropdownMenu {
-	background-color: #33394f;
-	border-radius: 5px;
-	box-shadow: 0 0px 4px 1px #33394fbf;
-	border: none;
-
-	:global {
-		.q-list {
-			min-width: 170px;
-			border: none;
-			padding: 6px 0;
-		}
-	} // :global
-} // .dropdownMenu
 </style>
 
 <style lang="scss" scoped>

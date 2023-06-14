@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useState } from '#imports';
 import { farEdit } from '@quasar/extras/fontawesome-v5';
 
 const feedTab = useState<'my-articles' | 'favorited-articles'>('feedTabs', () => 'my-articles');

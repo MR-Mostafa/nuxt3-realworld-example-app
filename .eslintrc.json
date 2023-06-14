@@ -31,6 +31,7 @@
 		"no-alert": "error",
 		"arrow-parens": ["error", "always"],
 		"vue/no-multiple-template-root": "off",
-		"vue/multi-word-component-names": "off"
+		"vue/multi-word-component-names": "off",
+		"import/order": "off"
 	}
 }
