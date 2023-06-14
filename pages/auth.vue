@@ -66,7 +66,7 @@ const handleSubmitForm = async (obj: Record<string, string>) => {
 		.catch((err) => {
 			useNotify({
 				color: 'red-8',
-				message: 'There has been an error in the input forms, please check them again.',
+				message: 'An error has occurred, please check them again.',
 				type: 'negative',
 				icon: fasExclamationTriangle,
 			});
