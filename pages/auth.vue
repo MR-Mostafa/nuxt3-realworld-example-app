@@ -7,15 +7,7 @@ import { authState } from '~/store';
 import { RegisterLogin, User, UserLogin } from '~/types';
 
 definePageMeta({
-	middleware: [
-		function () {
-			const userAuth = authState();
-
-			if (userAuth.get.value) {
-				return navigateTo(`/@${userAuth.get.value.username}`);
-			}
-		},
-	],
+	middleware: ['redirect-to-profile'],
 });
 
 const auth = authState();
