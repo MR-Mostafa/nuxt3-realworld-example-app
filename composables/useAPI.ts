@@ -34,9 +34,10 @@ export function useAPI<T = unknown>(url: string | (() => string), userOptions: F
 		key: typeof url === 'string' ? url : url(),
 
 		onRequest({ options }) {
-			const getToken = userToken.get();
+			const hasToken = userToken.hasToken();
 
-			if (getToken) {
+			if (hasToken) {
+				const getToken = userToken.get();
 				options.headers = {
 					...options.headers,
 					'Authorization': getToken,
