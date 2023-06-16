@@ -33,6 +33,7 @@ export default defineNuxtConfig({
 			},
 		],
 		'@nuxtjs/eslint-module',
+		'@nuxt/devtools',
 	],
 
 	components: [{ path: '~/components/icons', pathPrefix: false }, '~/components'],
