@@ -46,7 +46,6 @@ const createPageLink = (page: number): RouteLocationRaw => {
 <template>
 	<div class="flex row q-gutter-x-lg">
 		<main class="col" :class="$style.main">
-			<NuxtLink :to="{ query: { tag: 'asd' }, params: { pageNumber: '5' }, path: 'page' }">test</NuxtLink>
 			<q-tabs v-model="feedTab" no-caps>
 				<q-tab name="global" label="Global Feed" />
 				<q-tab name="local" label="Your Feed" />
