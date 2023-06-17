@@ -1,28 +1,68 @@
 <script setup lang="ts">
-import { useState } from '#imports';
+import { computed, useRoute, useRouter, useState, watchEffect } from '#imports';
+import { LocationQueryValue, RouteLocationRaw } from '~/.nuxt/vue-router';
+import { PAGE_SIZE_LIMIT } from '~/constants';
+import { getAllArticles } from '~/services';
+
+const route = useRoute();
+const router = useRouter();
 
 const feedTab = useState<'global' | 'local'>('feedTabs', () => 'global');
+
+const { data: allArticles, pending: articlesLoading, error: articlesError } = await getAllArticles();
+
+const page = computed(() => {
+	if (!allArticles.value) return;
+
+	const articlesCount = allArticles.value.articlesCount;
+	const query = route.query as Record<string, LocationQueryValue>;
+	const pageNumberParam = (route.params.pageNumber || '1') as string;
+
+	const limit = parseInt(query.limit || PAGE_SIZE_LIMIT, 10);
+	const current = parseInt(pageNumberParam, 10);
+	const total = Math.ceil(articlesCount / limit);
+
+	return {
+		current,
+		total,
+	};
+});
+
+watchEffect(() => {
+	if (allArticles.value?.articles.length !== 0) return;
+
+	const pastQuery = route.query;
+
+	router.replace({ query: { ...pastQuery }, path: '/page/1' });
+});
+
+const createPageLink = (page: number): RouteLocationRaw => {
+	const pastQuery = route.query;
+
+	return { query: { ...pastQuery }, path: `/page/${page}` };
+};
 </script>
 
 <template>
 	<div class="flex row q-gutter-x-lg">
 		<main class="col" :class="$style.main">
+			<NuxtLink :to="{ query: { tag: 'asd' }, params: { pageNumber: '5' }, path: 'page' }">test</NuxtLink>
 			<q-tabs v-model="feedTab" no-caps>
 				<q-tab name="global" label="Global Feed" />
 				<q-tab name="local" label="Your Feed" />
 			</q-tabs>
 			<q-tab-panels v-model="feedTab" animated>
 				<q-tab-panel name="global" class="global-article">
-					<ShortArticle />
-					<ShortArticle />
-					<ShortArticle />
-					<ShortArticle />
-					<ShortArticle />
-					<ShortArticle />
+					<Spinner v-if="articlesLoading" />
 
-					<div class="q-pt-lg">
-						<Pagination />
-					</div>
+					<template v-if="allArticles">
+						<ShortArticle v-for="(item, index) in allArticles.articles" :key="index" v-bind="item" />
+						<div class="q-pt-lg">
+							<Pagination :current-page="page!.current" :total-page="page!.total" :handle-page-link="createPageLink" />
+						</div>
+					</template>
+
+					<ErrorBox v-if="articlesError" />
 				</q-tab-panel>
 
 				<q-tab-panel name="local" class="local-article">
