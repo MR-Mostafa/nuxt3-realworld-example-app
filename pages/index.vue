@@ -54,7 +54,7 @@ const createPageLink = (page: number): RouteLocationRaw => {
 				<q-tab-panel name="global" class="global-article">
 					<Spinner v-if="articlesLoading" />
 
-					<template v-if="allArticles">
+					<template v-if="allArticles && !articlesLoading">
 						<ShortArticle v-for="(item, index) in allArticles.articles" :key="index" v-bind="item" />
 						<div class="q-pt-lg">
 							<Pagination :current-page="page!.current" :total-page="page!.total" :handle-page-link="createPageLink" />
