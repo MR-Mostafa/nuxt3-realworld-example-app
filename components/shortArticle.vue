@@ -1,24 +1,27 @@
+<script setup lang="ts">
+import { Article } from '~/types';
+
+const props = defineProps<Article>();
+</script>
 <template>
 	<q-card tag="article" :class="$style.article">
 		<q-card-section class="q-pa-lg">
 			<header>
 				<h1 class="text-h5">
-					<NuxtLink to="/" class="text-white"
-						>If we quantify the alarm, we can get to the FTP pixel through the online SSL interface!
-					</NuxtLink>
+					<NuxtLink :to="`/article/${props.slug}`" class="text-white">{{ props.title }} </NuxtLink>
 				</h1>
 
 				<div class="flex row items-center justify-between q-py-md q-mb-sm">
-					<Avatar />
-					<Like />
+					<Avatar :avatar-src="props.author.image" :username="props.author.username" :date="props.createdAt" />
+					<Like :favorites-count="props.favoritesCount" :is-favorited="props.favorited" :slug="props.slug" />
 				</div>
 			</header>
 
-			<p class="text-h6 text-weight-light">The three main languages you need to know well are HTML, CSS, and JavaScript...</p>
+			<p class="text-h6 text-weight-light">{{ props.description }}</p>
 
 			<footer class="q-pt-lg flex row items-center justify-between">
-				<BtnMore />
-				<ArticleTags class="q-pl-lg" />
+				<BtnMore :href="`/article/${props.slug}`" />
+				<ArticleTags :tag-list="props.tagList" class="q-pl-lg" />
 			</footer>
 		</q-card-section>
 	</q-card>
@@ -32,6 +35,20 @@
 
 	& + .article {
 		margin-top: 2.5rem;
+	}
+
+	:global {
+		h1 {
+			overflow: hidden;
+			max-height: 64px;
+
+			a {
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				line-clamp: 2;
+				-webkit-box-orient: vertical;
+			}
+		}
 	}
 } // .article
 </style>
