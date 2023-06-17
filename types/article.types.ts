@@ -1,3 +1,5 @@
+import { LocationQueryValue } from '~/.nuxt/vue-router';
+
 export interface Article {
 	slug: string;
 	title: string;
@@ -22,9 +24,9 @@ export interface AllArticles {
 }
 
 export interface GetAllArticlesProps {
-	tag?: string;
-	author?: string;
-	favorited?: string;
-	offset?: number;
-	limit?: number;
+	tag?: LocationQueryValue | LocationQueryValue[];
+	author?: LocationQueryValue | LocationQueryValue[];
+	favorited?: LocationQueryValue | LocationQueryValue[];
+	offset?: LocationQueryValue | LocationQueryValue[];
+	limit?: LocationQueryValue | LocationQueryValue[];
 }
