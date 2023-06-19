@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { navigateTo } from '#app';
 import { ref } from '#imports';
-import { fasEdit, fasSignOutAlt, fasUser, fasUserEdit } from '@quasar/extras/fontawesome-v5';
+import { fasEdit, fasRssSquare, fasSignOutAlt, fasUser, fasUserEdit } from '@quasar/extras/fontawesome-v5';
 import { useToken } from '~/composables';
 import { authState } from '~/store/auth';
 
@@ -44,6 +44,11 @@ const handleSignOut = async () => {
 			<q-item v-ripple clickable :to="`/@${auth.get.value.username}`">
 				<q-item-section avatar><q-icon :name="fasUser" size="18px" /></q-item-section>
 				<q-item-section>My Profile</q-item-section>
+			</q-item>
+
+			<q-item v-ripple clickable to="/profile/feed">
+				<q-item-section avatar><q-icon :name="fasRssSquare" size="18px" /></q-item-section>
+				<q-item-section>My Feed</q-item-section>
 			</q-item>
 
 			<q-item v-ripple clickable to="/profile/settings">
