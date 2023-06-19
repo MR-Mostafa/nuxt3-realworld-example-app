@@ -1,40 +1,11 @@
 <script setup lang="ts">
-import { computed, useRoute, useRouter, useState, watchEffect } from '#imports';
-import { LocationQueryValue, RouteLocationRaw } from '~/.nuxt/vue-router';
-import { PAGE_SIZE_LIMIT } from '~/constants';
+import { useRoute } from '#imports';
+import { RouteLocationRaw } from '~/.nuxt/vue-router';
 import { getAllArticles } from '~/services';
 
 const route = useRoute();
-const router = useRouter();
 
-const feedTab = useState<'global' | 'local'>('feedTabs', () => 'global');
-
-const { data: allArticles, pending: articlesLoading, error: articlesError } = await getAllArticles();
-
-const page = computed(() => {
-	if (!allArticles.value) return;
-
-	const articlesCount = allArticles.value.articlesCount;
-	const query = route.query as Record<string, LocationQueryValue>;
-	const pageNumberParam = (route.params.pageNumber || '1') as string;
-
-	const limit = parseInt(query.limit || PAGE_SIZE_LIMIT, 10);
-	const current = parseInt(pageNumberParam, 10);
-	const total = Math.ceil(articlesCount / limit);
-
-	return {
-		current,
-		total,
-	};
-});
-
-watchEffect(() => {
-	if (allArticles.value?.articles.length !== 0) return;
-
-	const pastQuery = route.query;
-
-	router.replace({ query: { ...pastQuery }, path: '/page/1' });
-});
+const { data: allArticles, pending, error } = await getAllArticles();
 
 const createPageLink = (page: number): RouteLocationRaw => {
 	const pastQuery = route.query;
@@ -46,30 +17,7 @@ const createPageLink = (page: number): RouteLocationRaw => {
 <template>
 	<div class="flex row q-gutter-x-lg">
 		<main class="col" :class="$style.main">
-			<q-tabs v-model="feedTab" no-caps>
-				<q-tab name="global" label="Global Feed" />
-				<q-tab name="local" label="Your Feed" />
-			</q-tabs>
-			<q-tab-panels v-model="feedTab" animated>
-				<q-tab-panel name="global" class="global-article">
-					<Spinner v-if="articlesLoading" />
-
-					<template v-if="allArticles && !articlesLoading">
-						<ShortArticle v-for="(item, index) in allArticles.articles" :key="index" v-bind="item" />
-						<div class="q-pt-lg">
-							<Pagination :current-page="page!.current" :total-page="page!.total" :handle-page-link="createPageLink" />
-						</div>
-					</template>
-
-					<ErrorBox v-if="articlesError" />
-				</q-tab-panel>
-
-				<q-tab-panel name="local" class="local-article">
-					<p class="text-center text-h6 q-py-md text-weight-light">
-						Please <NuxtLink to="/auth" class="text-white q-pb-sm">sign in</NuxtLink> if you have not already.
-					</p>
-				</q-tab-panel>
-			</q-tab-panels>
+			<ShortArticlesSection :data="allArticles" :pending="pending" :error="error" :handle-create-page-link="createPageLink" />
 		</main>
 
 		<Aside class="col-4 q-pl-lg" />
@@ -116,14 +64,10 @@ const createPageLink = (page: number): RouteLocationRaw => {
 			padding-right: 13px;
 		}
 
-		.local-article {
-			a {
-				border-bottom: 1px dashed #fff;
-
-				&:hover,
-				&:focus {
-					opacity: 0.75;
-				}
+		a {
+			&:hover,
+			&:focus {
+				opacity: 0.9;
 			}
 		}
 	} // :global
