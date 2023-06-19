@@ -31,3 +31,25 @@ export const getAllArticles = () => {
 		watch: [queries],
 	});
 };
+
+export const getArticlesFeed = () => {
+	const route = useRoute();
+
+	const queries = computed(() => {
+		const query = route.query as Record<string, LocationQueryValue>;
+		const pageNumberParam = (route.params.pageNumber || '1') as string;
+
+		const limit = parseInt(query.limit || PAGE_SIZE_LIMIT, 10);
+		const page = (parseInt(pageNumberParam, 10) - 1) * limit;
+
+		return {
+			limit,
+			offset: page,
+		};
+	});
+
+	return useAPI<AllArticles>('/articles/feed', {
+		query: queries,
+		watch: [queries],
+	});
+};
