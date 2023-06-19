@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, definePageMeta, navigateTo, ref } from '#imports';
-import { fasCheckSquare, fasExclamationTriangle } from '@quasar/extras/fontawesome-v5';
 import { useAPI, useNotify } from '~/composables';
 import { DEBOUNCE_INPUT_TIME, EMAIL_REGEX, ERROR_SEPARATOR } from '~/constants';
 import { authState } from '~/store';
@@ -43,10 +42,8 @@ const handleSubmitForm = async (obj: Record<string, string>) => {
 				auth.set(data);
 
 				useNotify({
-					color: 'green-8',
 					message: `${isActiveForm.value(loginData.value) ? 'Login' : 'Registration'} has been successful`,
-					type: 'positive',
-					icon: fasCheckSquare,
+					type: 'success',
 				});
 
 				await navigateTo(`/@${data.user.username}`);
@@ -54,10 +51,8 @@ const handleSubmitForm = async (obj: Record<string, string>) => {
 
 			if (error && error.message) {
 				useNotify({
-					color: 'red-8',
 					message: error.message.split(ERROR_SEPARATOR).join('<br />'),
-					type: 'negative',
-					icon: fasExclamationTriangle,
+					type: 'error',
 				});
 			}
 
@@ -65,10 +60,8 @@ const handleSubmitForm = async (obj: Record<string, string>) => {
 		})
 		.catch((err) => {
 			useNotify({
-				color: 'red-8',
 				message: 'An error has occurred, please check them again.',
-				type: 'negative',
-				icon: fasExclamationTriangle,
+				type: 'error',
 			});
 
 			console.error(err);

@@ -7,3 +7,7 @@ export const ONE_WEEK = ONE_DAY * 7;
 export const DEBOUNCE_INPUT_TIME = 150;
 
 export const ERROR_SEPARATOR = '_::_';
+
+export const PAGE_SIZE_LIMIT = '15';
+
+export const USERS_MUST_BE_LOGIN_IN_ROUTES = ['profile', 'article/add', 'article/edit'];

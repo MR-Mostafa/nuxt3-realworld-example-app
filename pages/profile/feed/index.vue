@@ -1,22 +1,27 @@
 <script setup lang="ts">
 import { useRoute } from '#imports';
 import { RouteLocationRaw } from '~/.nuxt/vue-router';
-import { getAllArticles } from '~/services';
+import { getArticlesFeed } from '~/services';
 
 const route = useRoute();
 
-const { data: allArticles, pending, error } = await getAllArticles();
+const { data: allArticles, pending, error } = await getArticlesFeed();
 
 const createPageLink = (page: number): RouteLocationRaw => {
 	const pastQuery = route.query;
 
-	return { query: { ...pastQuery }, path: `/page/${page}` };
+	return { query: { ...pastQuery }, path: `/profile/feed/page/${page}` };
 };
 </script>
 
 <template>
+	<Head>
+		<Title>Nuxt3 Realworld | feed - page {{ route.params.pageNumber }}</Title>
+	</Head>
+
 	<div class="flex row q-gutter-x-lg">
 		<main class="col" :class="$style.main">
+			<p class="text-h4 q-pb-lg">My Feed:</p>
 			<ShortArticlesSection :data="allArticles" :pending="pending" :error="error" :handle-create-page-link="createPageLink" />
 		</main>
 

@@ -34,9 +34,10 @@ export function useAPI<T = unknown>(url: string | (() => string), userOptions: F
 		key: typeof url === 'string' ? url : url(),
 
 		onRequest({ options }) {
-			const getToken = userToken.get();
+			const hasToken = userToken.hasToken();
 
-			if (getToken) {
+			if (hasToken) {
+				const getToken = userToken.get();
 				options.headers = {
 					...options.headers,
 					'Authorization': getToken,
@@ -48,6 +49,11 @@ export function useAPI<T = unknown>(url: string | (() => string), userOptions: F
 
 		onResponse({ response }) {
 			const token = response._data?.user?.token;
+			const hasError = !response.status.toString().startsWith('2') || response._data.status === 'error';
+
+			if (hasError) {
+				throw createError({ statusCode: response.status, statusMessage: response._data.status, message: response._data.message });
+			}
 
 			if (token) {
 				userToken.set(token);

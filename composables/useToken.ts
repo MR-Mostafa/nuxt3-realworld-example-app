@@ -13,5 +13,9 @@ export const useToken = <T = string | null | undefined>(options: CookieOptions<T
 		token.value = value;
 	};
 
-	return { get, set };
+	const hasToken = () => {
+		return !!token.value;
+	};
+
+	return { get, set, hasToken };
 };

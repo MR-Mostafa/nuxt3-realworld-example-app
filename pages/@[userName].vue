@@ -22,17 +22,9 @@ const feedTab = useState<'my-articles' | 'favorited-articles'>('feedTabs', () =>
 			<q-tab name="favorited-articles" label="Favorited Articles" />
 		</q-tabs>
 		<q-tab-panels v-model="feedTab" animated>
-			<q-tab-panel name="my-articles" class="my-articles">
-				<ShortArticle />
-				<ShortArticle />
-			</q-tab-panel>
+			<q-tab-panel name="my-articles" class="my-articles"> My Articles </q-tab-panel>
 
-			<q-tab-panel name="favorited-articles" class="favorited-articles">
-				<ShortArticle />
-				<ShortArticle />
-				<ShortArticle />
-				<ShortArticle />
-			</q-tab-panel>
+			<q-tab-panel name="favorited-articles" class="favorited-articles"> Favorited Articles </q-tab-panel>
 		</q-tab-panels>
 	</div>
 </template>
