@@ -1,32 +1,134 @@
 <script setup lang="ts">
-import { useState } from '#imports';
+import { computed, definePageMeta, useRoute, useState } from '#imports';
 import { farEdit } from '@quasar/extras/fontawesome-v5';
+import { LocationQueryValue, RouteLocationRaw } from '~/.nuxt/vue-router';
+import { PAGE_SIZE_LIMIT } from '~/constants';
+import { getAllArticles, getUserProfileData } from '~/services';
+import { authState } from '~/store';
+import { capitalizeWord } from '~/utils';
 
-const feedTab = useState<'my-articles' | 'favorited-articles'>('feedTabs', () => 'my-articles');
+definePageMeta({
+	middleware: [
+		(to) => {
+			const tab = to.query.tab as string;
+
+			if (tab && (tab === 'articles' || tab === 'favorited')) return;
+
+			return { query: { tab: 'articles' } };
+		},
+	],
+});
+
+const auth = authState();
+const route = useRoute();
+
+const routeName = computed(() => {
+	return route.params.userName as string;
+});
+
+const myArticlesQueries = computed(() => {
+	const query = route.query as Record<string, LocationQueryValue>;
+
+	const author = routeName.value;
+	const limit = parseInt(query.limit || PAGE_SIZE_LIMIT, 10);
+	const page = (parseInt(query.page || '1', 10) - 1) * limit;
+
+	return {
+		author,
+		limit,
+		offset: page,
+	};
+});
+
+const favoritedQueries = computed(() => {
+	const query = route.query as Record<string, LocationQueryValue>;
+
+	const favorited = routeName.value;
+	const limit = parseInt(query.limit || PAGE_SIZE_LIMIT, 10);
+	const page = (parseInt(query.page || '1', 10) - 1) * limit;
+
+	return {
+		favorited,
+		limit,
+		offset: page,
+	};
+});
+
+const { data: userData } = await getUserProfileData(routeName.value);
+
+const userProfileTab = useState<'articles' | 'favorited'>('userProfileTab', () => 'articles');
+
+const { data: myArticlesData, error: myArticlesError, pending: myArticlesPending } = await getAllArticles(myArticlesQueries);
+
+const { data: favoritedData, error: favoritedError, pending: favoritedPending } = await getAllArticles(favoritedQueries);
+
+const createPageLink = (page: number): RouteLocationRaw => {
+	const pastQuery = route.query;
+
+	return { query: { ...pastQuery, page } };
+};
 </script>
 
 <template>
-	<header :class="$style.header" class="relative-position">
-		<div class="btn-wrapper absolute">
-			<q-btn :icon="farEdit" label="Edit Profile Settings" class="edit-btn" no-caps />
-			<Follow class="q-ml-md" />
+	<template v-if="userData?.profile">
+		<header :class="$style.header" class="relative-position">
+			<div class="btn-wrapper absolute">
+				<q-btn
+					v-if="auth.get.value && auth.get.value.username === userData.profile.username"
+					:icon="farEdit"
+					label="Edit Profile Settings"
+					class="edit-btn"
+					no-caps
+					to="/profile/settings"
+				/>
+
+				<Follow
+					v-if="auth.get.value?.username !== userData.profile.username"
+					:user-name="userData.profile.username"
+					:is-follow="userData.profile.following"
+				/>
+			</div>
+
+			<p class="user-name text-h4 absolute absolute-center">{{ capitalizeWord(userData.profile.username) }}</p>
+			<q-avatar size="120px" class="absolute absolute-left absolute-right">
+				<q-img
+					:src="userData.profile.image"
+					:ratio="1"
+					width="120"
+					height="120"
+					:alt="userData.profile.username"
+					placeholder-src="/no-image.jpeg"
+				/>
+			</q-avatar>
+		</header>
+
+		<div :class="$style.tabsWrapper">
+			<q-tabs v-model="userProfileTab" no-caps>
+				<q-route-tab name="articles" label="My Articles" :to="{ query: { tab: 'articles' } }" />
+				<q-route-tab name="favorited" label="Favorited Articles" :to="{ query: { tab: 'favorited' } }" />
+			</q-tabs>
+
+			<q-tab-panels v-model="userProfileTab" animated>
+				<q-tab-panel name="articles" class="my-articles">
+					<ShortArticlesSection
+						:data="myArticlesData"
+						:pending="myArticlesPending"
+						:error="myArticlesError"
+						:handle-create-page-link="createPageLink"
+					/>
+				</q-tab-panel>
+
+				<q-tab-panel name="favorited" class="favorited-articles">
+					<ShortArticlesSection
+						:data="favoritedData"
+						:pending="favoritedPending"
+						:error="favoritedError"
+						:handle-create-page-link="createPageLink"
+					/>
+				</q-tab-panel>
+			</q-tab-panels>
 		</div>
-
-		<p class="user-name text-h4 absolute absolute-center">User Name</p>
-		<q-avatar icon="img:/sample/demo-avatar.png" size="120px" class="absolute absolute-left absolute-right" />
-	</header>
-
-	<div :class="$style.tabsWrapper">
-		<q-tabs v-model="feedTab" no-caps>
-			<q-tab name="my-articles" label="My Articles" />
-			<q-tab name="favorited-articles" label="Favorited Articles" />
-		</q-tabs>
-		<q-tab-panels v-model="feedTab" animated>
-			<q-tab-panel name="my-articles" class="my-articles"> My Articles </q-tab-panel>
-
-			<q-tab-panel name="favorited-articles" class="favorited-articles"> Favorited Articles </q-tab-panel>
-		</q-tab-panels>
-	</div>
+	</template>
 </template>
 
 <style lang="scss" module>
@@ -64,10 +166,8 @@ const feedTab = useState<'my-articles' | 'favorited-articles'>('feedTabs', () =>
 			margin: 0 auto;
 			display: block;
 
-			.q-icon {
-				width: 100%;
-				height: 100%;
-				background: linear-gradient(86.55deg, rgba(65, 88, 208, 0.6) 0%, #c850c0 46.88%, #ffcc70 100%);
+			.q-img__image {
+				border-radius: 50%;
 			}
 		} // .q-avatar
 	} // :global
