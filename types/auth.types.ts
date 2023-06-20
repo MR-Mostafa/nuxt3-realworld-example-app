@@ -1,11 +1,13 @@
+export interface UserData {
+	email: string;
+	token: string;
+	username: string;
+	bio: string;
+	image: string;
+}
+
 export interface User {
-	user: {
-		email: string;
-		token: string;
-		username: string;
-		bio: string;
-		image: string;
-	};
+	user: UserData;
 }
 
 export interface UserLogin {
