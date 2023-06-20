@@ -23,10 +23,10 @@ const page = computed(() => {
 
 	const articlesCount = props.data.articlesCount;
 	const query = route.query as Record<string, LocationQueryValue>;
-	const pageNumberParam = (route.params.pageNumber || '1') as string;
+	const pageNumber = (route.params.pageNumber || query.page || '1') as string;
 
 	const limit = parseInt(query.limit || PAGE_SIZE_LIMIT, 10);
-	const current = parseInt(pageNumberParam, 10);
+	const current = parseInt(pageNumber, 10);
 	const total = Math.ceil(articlesCount / limit);
 
 	return {

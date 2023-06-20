@@ -1,31 +1,19 @@
 import { computed, useRoute } from '#imports';
+import { ComputedRef } from 'nuxt/dist/app/compat/vue-demi';
 import { LocationQueryValue } from '~/.nuxt/vue-router';
 import { useAPI } from '~/composables';
 import { PAGE_SIZE_LIMIT } from '~/constants';
 import { AllArticles } from '~/types';
 
-export const getAllArticles = () => {
-	const route = useRoute();
+interface GetAllArticlesProps {
+	tag?: LocationQueryValue;
+	author?: LocationQueryValue;
+	favorited?: LocationQueryValue;
+	limit: number;
+	offset: number;
+}
 
-	const queries = computed(() => {
-		const query = route.query as Record<string, LocationQueryValue>;
-		const pageNumberParam = (route.params.pageNumber || '1') as string;
-
-		const tag = query.tag;
-		const author = query.author;
-		const favorited = query.favorited;
-		const limit = parseInt(query.limit || PAGE_SIZE_LIMIT, 10);
-		const page = (parseInt(pageNumberParam, 10) - 1) * limit;
-
-		return {
-			tag,
-			author,
-			favorited,
-			limit,
-			offset: page,
-		};
-	});
-
+export const getAllArticles = (queries: ComputedRef<GetAllArticlesProps>) => {
 	return useAPI<AllArticles>('/articles', {
 		query: queries,
 		watch: [queries],
