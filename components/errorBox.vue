@@ -1,5 +1,10 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ msg?: string }>(), { msg: 'Something Went Wrong' });
+import { ref } from '#imports';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const props = withDefaults(defineProps<{ msg?: string; error?: any }>(), { msg: 'Something Went Wrong', error: undefined });
+
+const isDev = ref(process.dev);
 
 const date = () => {
 	return new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' }).format(new Date(new Date().toISOString())).toUpperCase();
@@ -14,6 +19,7 @@ const date = () => {
 			<span>Today at</span>&nbsp;
 			<span>{{ date() }}</span>
 		</p>
+		<pre v-if="props.error && isDev">{{ props.error }}</pre>
 		<slot></slot>
 	</div>
 </template>
