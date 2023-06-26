@@ -1,10 +1,27 @@
-<template>
-	<header :class="$style.header" class="relative-position">
-		<p class="user-name text-h4 absolute absolute-center">Your Settings</p>
-		<q-avatar icon="img:/sample/demo-avatar.png" size="120px" class="absolute absolute-left absolute-right" />
-	</header>
+<script setup lang="ts">
+import { authState } from '~/store';
 
-	<ChangeSettings />
+const auth = authState();
+</script>
+
+<template>
+	<ClientOnly>
+		<header :class="$style.header" class="relative-position">
+			<p class="user-name text-h4 absolute absolute-center">Your Settings</p>
+
+			<q-avatar size="120px" class="absolute absolute-left absolute-right">
+				<q-img
+					:src="auth.get.value!.image"
+					:ratio="1"
+					width="120"
+					height="120"
+					:alt="auth.get.value!.username"
+					placeholder-src="/no-image.jpeg"
+				/>
+			</q-avatar>
+		</header>
+		<ChangeSettings />
+	</ClientOnly>
 </template>
 
 <style lang="scss" module>
@@ -42,10 +59,8 @@
 			margin: 0 auto;
 			display: block;
 
-			.q-icon {
-				width: 100%;
-				height: 100%;
-				background: linear-gradient(86.55deg, rgba(65, 88, 208, 0.6) 0%, #c850c0 46.88%, #ffcc70 100%);
+			.q-img__image {
+				border-radius: 50%;
 			}
 		} // .q-avatar
 	} // :global
