@@ -1,6 +1,6 @@
 import { createError } from '#imports';
 import { useAPI } from '~/composables';
-import { Profile } from '~/types';
+import { Profile, UpdateUserData, User } from '~/types';
 
 /**
  * @description
@@ -36,4 +36,8 @@ export const addFollowUser = (useName: string) => {
  */
 export const removeUnFollowUser = (useName: string) => {
 	return useAPI<Profile>(`/profiles/${useName}/follow`, { method: 'DELETE' });
+};
+
+export const updateUserData = (newValues: UpdateUserData) => {
+	return useAPI<User>('/user', { method: 'PUT', body: { user: newValues } });
 };
