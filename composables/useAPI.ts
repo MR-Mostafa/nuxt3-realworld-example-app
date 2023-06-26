@@ -52,7 +52,11 @@ export function useAPI<T = unknown>(url: string | (() => string), userOptions: F
 			const hasError = !response.status.toString().startsWith('2') || response._data.status === 'error';
 
 			if (hasError) {
-				throw createError({ statusCode: response.status, statusMessage: response._data.status, message: response._data.message });
+				throw createError({
+					statusCode: response.status,
+					statusMessage: response._data.status,
+					message: response._data?.message || JSON.stringify(response._data?.errors),
+				});
 			}
 
 			if (token) {
