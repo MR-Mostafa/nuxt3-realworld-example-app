@@ -48,7 +48,7 @@ const page = computed(() => {
 			</div>
 		</template>
 
-		<ErrorBox v-else msg="Information has not been found" :error="error">
+		<ErrorBox v-else msg="Information has not been found" :error="error" type="info">
 			<q-btn
 				v-if="props.data.articles.length === 0 && props.data.articlesCount !== 0"
 				no-caps

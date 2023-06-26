@@ -2,7 +2,11 @@
 import { ref } from '#imports';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const props = withDefaults(defineProps<{ msg?: string; error?: any }>(), { msg: 'Something Went Wrong', error: undefined });
+const props = withDefaults(defineProps<{ msg?: string; error?: any; type?: 'error' | 'info' }>(), {
+	msg: 'Something Went Wrong',
+	error: undefined,
+	type: 'error',
+});
 
 const isDev = ref(process.dev);
 
@@ -13,7 +17,7 @@ const date = () => {
 
 <template>
 	<div class="flex column wrap items-center justify-center" :class="$style.errorBox">
-		<WarningIcon />
+		<WarningIcon :class="{ [$style.svgError]: props.type === 'error', [$style.svgInfo]: props.type === 'info' }" />
 		<p class="q-pt-sm text-weight-medium text-body1">{{ props.msg }}</p>
 		<p class="q-pt-xs q-pb-md text-body2">
 			<span>Today at</span>&nbsp;
@@ -41,5 +45,13 @@ const date = () => {
 			color: #d1caff;
 		}
 	}
+}
+
+.svgError {
+	color: #fc728b;
+}
+
+.svgInfo {
+	color: #d1caff;
 }
 </style>
