@@ -13,10 +13,11 @@ interface GetAllArticlesProps {
 	offset: number;
 }
 
-export const getAllArticles = (queries: ComputedRef<GetAllArticlesProps>) => {
+export const getAllArticles = (queries: ComputedRef<GetAllArticlesProps>, server = true) => {
 	return useAPI<AllArticles>('/articles', {
 		query: queries,
 		watch: [queries],
+		server,
 	});
 };
 
