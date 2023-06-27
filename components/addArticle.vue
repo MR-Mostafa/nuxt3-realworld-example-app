@@ -4,6 +4,7 @@
 import { computed, ref } from '#imports';
 import { fasTimes } from '@quasar/extras/fontawesome-v5';
 import { marked } from 'marked';
+import { Ref } from 'nuxt/dist/app/compat/vue-demi';
 import sanitizeHtml from 'sanitize-html';
 import { ErrorValidation, NewArticle } from '~/types';
 import { validator } from '~/utils';
@@ -16,7 +17,7 @@ const props = withDefaults(defineProps<Partial<NewArticle> & { loading: boolean 
 });
 
 const emit = defineEmits<{
-	(e: 'onSubmit', data: NewArticle): void;
+	(e: 'onSubmit', data: Ref<NewArticle>): void;
 }>();
 
 const tagValue = ref('');
@@ -154,7 +155,7 @@ const handleSubmitForm = computed(() => {
 
 		if (hasTitleError || hasDescriptionError || hasBodyError || hasTagListError) return;
 
-		emit('onSubmit', data.value);
+		emit('onSubmit', data);
 	};
 });
 </script>
