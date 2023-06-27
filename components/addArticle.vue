@@ -1,6 +1,10 @@
+<!-- eslint-disable vue/no-v-html -->
+
 <script setup lang="ts">
 import { computed, ref } from '#imports';
 import { fasTimes } from '@quasar/extras/fontawesome-v5';
+import { marked } from 'marked';
+import sanitizeHtml from 'sanitize-html';
 import { ErrorValidation, NewArticle } from '~/types';
 import { validator } from '~/utils';
 
@@ -17,6 +21,7 @@ const emit = defineEmits<{
 
 const tagValue = ref('');
 const tagInput = ref<HTMLInputElement>();
+const isShowPreviewMarkdown = ref(false);
 
 const refValidation = ref<Record<keyof NewArticle, ErrorValidation>>({
 	title: {
@@ -134,6 +139,12 @@ const handleDeleteTags = (value: string) => {
 	data.value.tagList = data.value.tagList.filter((tag) => tag !== value);
 };
 
+const previewMarkdown = computed(() => {
+	if (!isShowPreviewMarkdown.value || data.value.body.length === 0 || refValidation.value.body.hasError) return;
+
+	return sanitizeHtml(marked.parse(data.value.body));
+});
+
 const handleSubmitForm = computed(() => {
 	return () => {
 		const hasTitleError = titleValidation.value();
@@ -184,6 +195,7 @@ const handleSubmitForm = computed(() => {
 			v-model="data.body"
 			filled
 			class="text-body1 col-12"
+			:class="$style.bodyWrapper"
 			type="textarea"
 			inputmode="text"
 			label="Write your article (in markdown)"
@@ -193,7 +205,13 @@ const handleSubmitForm = computed(() => {
 			no-error-icon
 			:disable="props.loading"
 			@blur="bodyValidation"
-		/>
+		>
+			<template #append>
+				<q-btn v-if="data.body.length >= 15 && !refValidation.body.hasError" dense no-caps @click="isShowPreviewMarkdown = true"
+					>Preview</q-btn
+				>
+			</template>
+		</q-input>
 
 		<div class="col-12">
 			<q-input
@@ -252,6 +270,10 @@ const handleSubmitForm = computed(() => {
 			/>
 		</div>
 	</q-form>
+
+	<Modal :show="isShowPreviewMarkdown" :hide="() => (isShowPreviewMarkdown = false)" title="Preview Markdown">
+		<div :class="$style.previewMarkdown" v-html="previewMarkdown" />
+	</Modal>
 </template>
 
 <style lang="scss" module>
@@ -277,6 +299,24 @@ const handleSubmitForm = computed(() => {
 		} // .q-btn
 	} // :global
 } // .changeSettings
+
+.bodyWrapper {
+	:global {
+		.q-field__append {
+			position: absolute;
+			top: auto;
+			bottom: 0;
+			right: 12px;
+			z-index: 10;
+			padding: 0;
+			pointer-events: none;
+		} // .q-field__append
+
+		.q-btn {
+			pointer-events: auto;
+		}
+	}
+} // .bodyWrapper
 
 .tagsWrapper {
 	:global {
@@ -312,4 +352,55 @@ const handleSubmitForm = computed(() => {
 		}
 	} // :global
 } // .tagsWrapper
+
+.previewMarkdown {
+	* {
+		font-size: 1.2rem;
+		font-weight: 300;
+		line-height: 1.9rem;
+		letter-spacing: 0.0125em;
+		color: #fff;
+	}
+
+	h1 {
+		font-size: 1.5rem;
+		font-weight: 400;
+		line-height: 2rem;
+		letter-spacing: normal;
+		padding-bottom: 16px;
+	}
+
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		font-size: 1.25rem;
+		font-weight: 400;
+		line-height: 2rem;
+		letter-spacing: normal;
+		padding-bottom: 16px;
+	}
+
+	blockquote {
+		margin: 1em 0;
+		border-left: 5px solid #ffffffcf;
+		padding: 0 40px;
+	}
+
+	a {
+		color: #ffffffcf;
+		text-decoration: underline;
+		text-underline-position: under;
+
+		&:hover,
+		&:focus {
+			color: #fff;
+		}
+	}
+
+	ul {
+		padding-left: 20px;
+	}
+} // .previewMarkdown
 </style>
