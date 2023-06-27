@@ -33,7 +33,14 @@ import { fasChevronLeft, fasChevronRight } from '@quasar/extras/fontawesome-v5';
 			<div class="flex q-px-md" :class="$style.buttonGroup">
 				<UserDropdown />
 
-				<q-btn flat rounded class="github-btn" href="#" target="_blank" rel="noopener noreferrer">
+				<q-btn
+					flat
+					rounded
+					class="github-btn"
+					href="https://github.com/MR-Mostafa/nuxt3-realworld-example-app"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
 					<GithubIcon />
 				</q-btn>
 			</div>
