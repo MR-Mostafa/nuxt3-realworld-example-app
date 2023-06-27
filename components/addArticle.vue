@@ -1,35 +1,255 @@
+<script setup lang="ts">
+import { computed, ref } from '#imports';
+import { fasTimes } from '@quasar/extras/fontawesome-v5';
+import { ErrorValidation, NewArticle } from '~/types';
+import { validator } from '~/utils';
+
+const props = withDefaults(defineProps<Partial<NewArticle> & { loading: boolean }>(), {
+	title: '',
+	description: '',
+	body: '',
+	tagList: () => [],
+});
+
+const emit = defineEmits<{
+	(e: 'onSubmit', data: NewArticle): void;
+}>();
+
+const tagValue = ref('');
+const tagInput = ref<HTMLInputElement>();
+
+const refValidation = ref<Record<keyof NewArticle, ErrorValidation>>({
+	title: {
+		hasError: false,
+		message: undefined,
+	},
+	description: {
+		hasError: false,
+		message: undefined,
+	},
+	body: {
+		hasError: false,
+		message: undefined,
+	},
+	tagList: {
+		hasError: false,
+		message: undefined,
+	},
+});
+
+const data = ref<NewArticle>({
+	title: props.title,
+	description: props.description,
+	body: props.body,
+	tagList: props.tagList,
+});
+
+const titleValidation = computed(() => {
+	const title = data.value.title;
+
+	return () =>
+		validator({
+			validate: [
+				{
+					condition: title.length === 0,
+					message: 'Please enter the article title',
+				},
+				{
+					condition: title.length <= 5,
+					message: 'A minimum of 5 characters must be included in the article title',
+				},
+			],
+			ref: refValidation.value.title,
+		});
+});
+
+const descriptionValidation = computed(() => {
+	const description = data.value.description;
+
+	return () =>
+		validator({
+			validate: [
+				{
+					condition: description.length === 0,
+					message: 'Please enter the article description',
+				},
+				{
+					condition: description.length <= 5,
+					message: 'A minimum of 5 characters must be included in the article description',
+				},
+			],
+			ref: refValidation.value.description,
+		});
+});
+
+const bodyValidation = computed(() => {
+	const body = data.value.body;
+
+	return () =>
+		validator({
+			validate: [
+				{
+					condition: body.length === 0,
+					message: 'Please enter the article body',
+				},
+				{
+					condition: body.length <= 15,
+					message: 'A minimum of 15 characters must be included in the article body',
+				},
+			],
+			ref: refValidation.value.body,
+		});
+});
+
+const tagListValidation = computed(() => {
+	const tagList = data.value.tagList;
+
+	return () =>
+		validator({
+			validate: [
+				{
+					condition: tagList.length === 0,
+					message: 'A minimum of 1 tag is required for this article',
+				},
+				{
+					condition: tagList.includes(tagValue.value.trim()),
+					message: 'Duplicate tag entered',
+				},
+			],
+			ref: refValidation.value.tagList,
+		});
+});
+
+const handleAddTags = () => {
+	const value = tagValue.value.trim();
+	const tagList = data.value.tagList;
+
+	if (value.length === 0 || tagList.includes(value)) return;
+
+	tagValue.value = '';
+	data.value.tagList.push(value);
+};
+
+const handleDeleteTags = (value: string) => {
+	data.value.tagList = data.value.tagList.filter((tag) => tag !== value);
+};
+
+const handleSubmitForm = computed(() => {
+	return () => {
+		const hasTitleError = titleValidation.value();
+		const hasDescriptionError = descriptionValidation.value();
+		const hasBodyError = bodyValidation.value();
+		const hasTagListError = tagListValidation.value();
+
+		if (hasTitleError || hasDescriptionError || hasBodyError || hasTagListError) return;
+
+		emit('onSubmit', data.value);
+	};
+});
+</script>
+
 <template>
 	<q-form :class="$style.addArticle" class="row q-col-gutter-lg" autocomplete="off">
-		<q-input model-value="" filled class="text-body1 col-12" type="text" inputmode="text" label="Article Title" name="title" />
+		<q-input
+			v-model="data.title"
+			filled
+			class="text-body1 col-12"
+			type="text"
+			inputmode="text"
+			label="Article Title"
+			name="title"
+			:error-message="refValidation.title.message"
+			:error="refValidation.title.hasError"
+			no-error-icon
+			:disable="props.loading"
+			@blur="titleValidation"
+		/>
 
 		<q-input
-			model-value=""
+			v-model="data.description"
 			filled
 			class="text-body1 col-12"
 			type="text"
 			inputmode="text"
 			label="What's this article about?"
 			name="description"
+			:error-message="refValidation.description.message"
+			:error="refValidation.description.hasError"
+			no-error-icon
+			:disable="props.loading"
+			@blur="descriptionValidation"
 		/>
 
 		<q-input
-			model-value=""
+			v-model="data.body"
 			filled
 			class="text-body1 col-12"
 			type="textarea"
 			inputmode="text"
 			label="Write your article (in markdown)"
 			name="body"
+			:error-message="refValidation.body.message"
+			:error="refValidation.body.hasError"
+			no-error-icon
+			:disable="props.loading"
+			@blur="bodyValidation"
 		/>
 
 		<div class="col-12">
-			<q-input model-value="" filled class="text-body1" type="text" inputmode="text" label="Enter tags" name="tags" />
-
-			<ArticleTags class="q-pt-sm" />
+			<q-input
+				ref="tagInput"
+				v-model="tagValue"
+				filled
+				class="text-body1"
+				:class="$style.tagsWrapper"
+				type="text"
+				inputmode="text"
+				label="Enter tags (Press enter to add each tag)"
+				name="tags"
+				:disable="props.loading"
+				:error-message="refValidation.tagList.message"
+				:error="refValidation.tagList.hasError"
+				no-error-icon
+				@keyup.enter="
+					() => {
+						handleAddTags();
+						tagListValidation();
+					}
+				"
+				@keyup.delete="
+					() => {
+						if (data.tagList.length === 0) return;
+						data.tagList.splice(-1);
+					}
+				"
+				@blur="tagListValidation"
+			>
+				<template #prepend>
+					<q-list
+						v-if="data.tagList.length !== 0"
+						tag="ul"
+						dense
+						class="flex inline row wrap text-body2 items-center justify-start"
+						@click="tagInput?.focus()"
+					>
+						<q-item v-for="(item, index) in data.tagList" :key="index" dense tag="li">
+							<q-btn dense flat no-caps :icon="fasTimes" :label="item" @click="handleDeleteTags(item)" />
+						</q-item>
+					</q-list>
+				</template>
+			</q-input>
 		</div>
 
 		<div class="col-12">
-			<q-btn label="Publish Article" class="full-width" size="21.8px" no-caps type="submit" />
+			<q-btn
+				label="Publish Article"
+				class="full-width"
+				size="21.8px"
+				no-caps
+				type="button"
+				:loading="props.loading"
+				@click.prevent="handleSubmitForm"
+			/>
 		</div>
 	</q-form>
 </template>
@@ -47,10 +267,49 @@
 			}
 		} // .q-field
 
+		.q-field__prepend {
+			height: auto;
+		}
+
 		.q-btn {
 			background-color: #d1caff;
 			color: #202433;
 		} // .q-btn
 	} // :global
 } // .changeSettings
+
+.tagsWrapper {
+	:global {
+		.q-field__control {
+			height: auto;
+		}
+
+		.q-field__prepend {
+			max-width: 75%;
+			padding-right: 0;
+		}
+		.q-list {
+			gap: 8px;
+			padding: 10px 10px 10px 0;
+
+			.q-item {
+				min-height: auto;
+				padding: 0;
+				position: relative;
+			} // .q-item
+
+			.q-btn {
+				padding: 0 5px 0 7px;
+			}
+
+			.on-left {
+				margin-right: 3px;
+			}
+
+			.q-icon {
+				font-size: 0.7rem;
+			}
+		}
+	} // :global
+} // .tagsWrapper
 </style>
