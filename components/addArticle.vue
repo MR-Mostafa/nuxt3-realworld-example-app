@@ -237,7 +237,7 @@ const handleSubmitForm = computed(() => {
 				"
 				@keyup.delete="
 					() => {
-						if (data.tagList.length === 0) return;
+						if (data.tagList.length === 0 || tagValue.length !== 0) return;
 						data.tagList.splice(-1);
 					}
 				"
