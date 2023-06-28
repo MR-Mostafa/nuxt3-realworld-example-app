@@ -10,33 +10,45 @@ const slug = computed(() => {
 	return route.params.slug as string;
 });
 
-const { data, error, pending } = await getSingleArticle(slug.value);
+const { data: articleData, error: articleError, pending: articlePending } = await getSingleArticle(slug.value);
 </script>
 
 <template>
-	<template v-if="data && data.article && !pending">
+	<template v-if="articleData && articleData.article && !articlePending">
 		<q-card tag="article" square flat :class="$style.article">
 			<q-card-section>
 				<header>
 					<h1 class="text-h5">
-						<NuxtLink :to="`/article/${slug}`" class="text-white">{{ data.article.title }}</NuxtLink>
+						<NuxtLink :to="`/article/${slug}`" class="text-white">{{ articleData.article.title }}</NuxtLink>
 					</h1>
 
 					<div class="flex row items-center justify-between q-py-md q-mb-sm">
-						<Avatar :avatar-src="data.article.author.image" :date="data.article.createdAt" :username="data.article.author.username" />
+						<Avatar
+							:avatar-src="articleData.article.author.image"
+							:date="articleData.article.createdAt"
+							:username="articleData.article.author.username"
+						/>
 
 						<div class="flex row items-center justify-between">
-							<Like :favorites-count="data.article.favoritesCount" :is-favorited="data.article.favorited" :slug="data.article.slug" />
+							<Like
+								:favorites-count="articleData.article.favoritesCount"
+								:is-favorited="articleData.article.favorited"
+								:slug="articleData.article.slug"
+							/>
 
-							<Follow class="q-ml-md" :user-name="data.article.author.username" :is-follow="data.article.author.following" />
+							<Follow class="q-ml-md" :user-name="articleData.article.author.username" :is-follow="articleData.article.author.following" />
 						</div>
 					</div>
 				</header>
 
-				<div class="text-h6 text-weight-light" :class="$style.articleContent" v-html="sanitizeHtml(marked.parse(data.article.body))" />
+				<div
+					class="text-h6 text-weight-light"
+					:class="$style.articleContent"
+					v-html="sanitizeHtml(marked.parse(articleData.article.body))"
+				/>
 
 				<footer class="q-pt-lg flex row items-center justify-between">
-					<ArticleTags :tag-list="data.article.tagList" />
+					<ArticleTags :tag-list="articleData.article.tagList" />
 				</footer>
 			</q-card-section>
 		</q-card>
@@ -59,7 +71,7 @@ const { data, error, pending } = await getSingleArticle(slug.value);
 		</div>
 	</template>
 
-	<ErrorBox v-if="error" :error="error" :msg="error?.message" />
+	<ErrorBox v-if="articleError" :error="articleError" :msg="articleError?.message" />
 </template>
 
 <style lang="scss" module>
