@@ -30,6 +30,14 @@
 
 			&.q-field--highlighted {
 				background-color: #3f455dd2;
+
+				.q-field__control {
+					&,
+					&:hover,
+					&:focus {
+						background: transparent !important;
+					}
+				}
 			} // &.q-field--highlighted
 
 			textarea {
@@ -45,7 +53,6 @@
 		} // .q-field
 
 		.q-field__control {
-			background: transparent !important;
 			padding: 0;
 			border-radius: 0;
 
@@ -54,9 +61,10 @@
 				display: none;
 			}
 
+			&,
 			&:hover,
 			&:focus {
-				background: transparent;
+				background: transparent !important;
 			}
 		} // .q-field__control
 
