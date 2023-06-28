@@ -43,6 +43,10 @@ export const getArticlesFeed = () => {
 	});
 };
 
+export const getSingleArticle = (slug: string) => {
+	return useAPI<{ article: Article }>(`/articles/${slug}`);
+};
+
 export const createNewArticle = (data: NewArticle) => {
 	return useAPI<Article>('/articles', { method: 'POST', body: { article: data } });
 };
