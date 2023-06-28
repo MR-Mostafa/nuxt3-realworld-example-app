@@ -54,3 +54,7 @@ export const createNewArticle = (data: NewArticle) => {
 export const updateArticle = (slug: string, data: NewArticle) => {
 	return useAPI<Article>(`/articles/${slug}`, { method: 'PUT', body: { article: data } });
 };
+
+export const deleteArticle = (slug: string) => {
+	return useAPI<object>(`/articles/${slug}?cache=false`, { method: 'DELETE' });
+};

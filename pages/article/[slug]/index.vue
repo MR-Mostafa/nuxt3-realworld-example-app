@@ -1,14 +1,17 @@
 <!-- eslint-disable @typescript-eslint/no-non-null-assertion -->
 <script setup lang="ts">
-import { computed, useRoute } from '#imports';
-import { fasEdit } from '@quasar/extras/fontawesome-v5';
+import { computed, navigateTo, ref, useRoute } from '#imports';
+import { farTrashAlt, fasEdit } from '@quasar/extras/fontawesome-v5';
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
-import { getArticleComments, getSingleArticle } from '~/services';
+import { useNotify } from '~/composables';
+import { ERROR_SEPARATOR } from '~/constants';
+import { deleteArticle, getArticleComments, getSingleArticle } from '~/services';
 import { authState } from '~/store';
 
 const route = useRoute();
 const auth = authState();
+const isDeleting = ref(false);
 
 const slug = computed(() => {
 	return route.params.slug as string;
@@ -25,6 +28,46 @@ const articleHTML = computed(() => {
 
 	return sanitizeHtml(marked.parse(body, { mangle: false, headerIds: false }));
 });
+
+const handleDeleteArticle = () => {
+	if (!articleData || !articleData.value) return;
+
+	isDeleting.value = true;
+
+	return deleteArticle(articleData.value.article.slug)
+		.then((res) => {
+			const error = res.error.value;
+
+			if (!error) {
+				useNotify({
+					message: 'This article has been successfully deleted',
+					type: 'success',
+				});
+
+				navigateTo('/', { replace: true });
+			}
+
+			if (error) {
+				useNotify({
+					message: error.message.split(ERROR_SEPARATOR).join('<br />'),
+					type: 'error',
+				});
+			}
+
+			return res;
+		})
+		.catch((err) => {
+			useNotify({
+				message: 'An error has occurred, please check them again.',
+				type: 'error',
+			});
+
+			console.error(err);
+		})
+		.finally(() => {
+			isDeleting.value = false;
+		});
+};
 </script>
 
 <template>
@@ -60,6 +103,16 @@ const articleHTML = computed(() => {
 									:to="`/article/${articleData.article.slug}/edit`"
 									color="teal-5"
 									class="q-ml-md"
+								/>
+
+								<q-btn
+									:icon="farTrashAlt"
+									label="Delete Article"
+									no-caps
+									color="red-5"
+									class="q-ml-md"
+									:loading="isDeleting"
+									@click="handleDeleteArticle"
 								/>
 							</template>
 						</div>
