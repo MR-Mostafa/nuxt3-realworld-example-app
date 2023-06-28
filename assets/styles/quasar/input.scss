@@ -1,0 +1,60 @@
+.q-field {
+	$bg-highlighted: #3f455dd2;
+
+	&.q-field--highlighted {
+		.q-field__control {
+			background-color: $bg-highlighted !important;
+		}
+
+		&:not(.q-field--error) {
+			input {
+				&::placeholder {
+					color: rgba(255, 255, 255, 0.5) !important;
+					font-weight: 300;
+					opacity: 1;
+				}
+			}
+		} // &:not(.q-field--error)
+	} // &.q-field--highlighted
+
+	&.q-field--error {
+		.q-field__control {
+			border-color: #fc728b;
+		}
+
+		.q-field__bottom {
+			color: #fc728b;
+		} // .q-field__bottom
+	} // &.q-field--error
+
+	&.q-field--disabled {
+		opacity: 0.85;
+	}
+
+	.q-field__control {
+		border-radius: 6px;
+		background-color: #33394f;
+		transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+		border: 1px solid transparent;
+
+		&:hover,
+		&:focus {
+			background-color: $bg-highlighted !important;
+		}
+
+		&::before,
+		&::after {
+			display: none !important;
+		}
+
+		input {
+			color: #fff !important;
+		}
+	} // .q-field__control
+
+	.q-field__control,
+	.q-field__label {
+		color: rgba(255, 255, 255, 0.6) !important;
+		font-weight: 300;
+	} // .q-field__label
+} // .q-field

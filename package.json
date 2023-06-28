@@ -17,9 +17,12 @@
 		"prepare": "husky install"
 	},
 	"devDependencies": {
+		"@nuxt/devtools": "^0.6.1",
 		"@nuxtjs/eslint-config-typescript": "^12.0.0",
 		"@nuxtjs/eslint-module": "^4.1.0",
+		"@types/marked": "^5.0.0",
 		"@types/node": "^18",
+		"@types/sanitize-html": "^2.9.0",
 		"@typescript-eslint/eslint-plugin": "^5.59.8",
 		"@typescript-eslint/parser": "^5.59.8",
 		"@vue/eslint-config-typescript": "^11.0.3",
@@ -37,7 +40,10 @@
 	},
 	"dependencies": {
 		"@quasar/extras": "^1.16.4",
-		"quasar": "^2.12.0"
+		"defu": "^6.1.2",
+		"marked": "^5.1.0",
+		"quasar": "^2.12.0",
+		"sanitize-html": "^2.11.0"
 	},
 	"engines": {
 		"node": ">=16",
