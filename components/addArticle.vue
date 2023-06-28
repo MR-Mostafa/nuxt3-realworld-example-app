@@ -143,7 +143,7 @@ const handleDeleteTags = (value: string) => {
 const previewMarkdown = computed(() => {
 	if (!isShowPreviewMarkdown.value || data.value.body.length === 0 || refValidation.value.body.hasError) return;
 
-	return sanitizeHtml(marked.parse(data.value.body));
+	return sanitizeHtml(marked.parse(data.value.body, { mangle: false, headerIds: false }));
 });
 
 const handleSubmitForm = computed(() => {
