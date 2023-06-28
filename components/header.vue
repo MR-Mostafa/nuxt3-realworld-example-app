@@ -6,7 +6,9 @@ import { fasChevronLeft, fasChevronRight } from '@quasar/extras/fontawesome-v5';
 	<q-header reveal class="bg-dark text-white no-border" :class="$style.header">
 		<q-toolbar>
 			<q-avatar square size="48px">
-				<img src="~/assets/images/logo.png" width="48" height="48" alt="Realworld Logo" />
+				<NuxtLink to="/" class="block full-width full-height">
+					<img src="~/assets/images/logo.png" width="48" height="48" alt="Realworld Logo" />
+				</NuxtLink>
 			</q-avatar>
 
 			<q-toolbar-title shrink class="column">
@@ -33,7 +35,14 @@ import { fasChevronLeft, fasChevronRight } from '@quasar/extras/fontawesome-v5';
 			<div class="flex q-px-md" :class="$style.buttonGroup">
 				<UserDropdown />
 
-				<q-btn flat rounded class="github-btn" href="#" target="_blank" rel="noopener noreferrer">
+				<q-btn
+					flat
+					rounded
+					class="github-btn"
+					href="https://github.com/MR-Mostafa/nuxt3-realworld-example-app"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
 					<GithubIcon />
 				</q-btn>
 			</div>

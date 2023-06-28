@@ -3,7 +3,7 @@ import { ComputedRef } from 'nuxt/dist/app/compat/vue-demi';
 import { LocationQueryValue } from '~/.nuxt/vue-router';
 import { useAPI } from '~/composables';
 import { PAGE_SIZE_LIMIT } from '~/constants';
-import { AllArticles } from '~/types';
+import { AllArticles, Article, NewArticle } from '~/types';
 
 interface GetAllArticlesProps {
 	tag?: LocationQueryValue;
@@ -41,4 +41,20 @@ export const getArticlesFeed = () => {
 		query: queries,
 		watch: [queries],
 	});
+};
+
+export const getSingleArticle = (slug: string) => {
+	return useAPI<{ article: Article }>(`/articles/${slug}`);
+};
+
+export const createNewArticle = (data: NewArticle) => {
+	return useAPI<Article>('/articles', { method: 'POST', body: { article: data } });
+};
+
+export const updateArticle = (slug: string, data: NewArticle) => {
+	return useAPI<Article>(`/articles/${slug}`, { method: 'PUT', body: { article: data } });
+};
+
+export const deleteArticle = (slug: string) => {
+	return useAPI<object>(`/articles/${slug}?cache=false`, { method: 'DELETE' });
 };
