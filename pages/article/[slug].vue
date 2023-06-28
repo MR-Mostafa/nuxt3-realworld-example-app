@@ -18,7 +18,9 @@ const { data: commentsData, error: commentsError, pending: commentsPending } = a
 const articleHTML = computed(() => {
 	if (!articleData.value || !articleData.value.article) return '';
 
-	return sanitizeHtml(marked.parse(articleData.value.article.body, { mangle: false, headerIds: false }));
+	const body = articleData.value.article.body.replace(/\\n/gi, '<br />');
+
+	return sanitizeHtml(marked.parse(body, { mangle: false, headerIds: false }));
 });
 </script>
 
