@@ -1,8 +1,9 @@
+<!-- eslint-disable @typescript-eslint/no-non-null-assertion -->
 <script setup lang="ts">
 import { computed, useRoute } from '#imports';
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
-import { getSingleArticle } from '~/services';
+import { getArticleComments, getSingleArticle } from '~/services';
 
 const route = useRoute();
 
@@ -11,6 +12,14 @@ const slug = computed(() => {
 });
 
 const { data: articleData, error: articleError, pending: articlePending } = await getSingleArticle(slug.value);
+
+const { data: commentsData, error: commentsError, pending: commentsPending } = await getArticleComments(slug.value);
+
+const articleHTML = computed(() => {
+	if (!articleData.value || !articleData.value.article) return '';
+
+	return sanitizeHtml(marked.parse(articleData.value.article.body, { mangle: false, headerIds: false }));
+});
 </script>
 
 <template>
@@ -41,11 +50,7 @@ const { data: articleData, error: articleError, pending: articlePending } = awai
 					</div>
 				</header>
 
-				<div
-					class="text-h6 text-weight-light"
-					:class="$style.articleContent"
-					v-html="sanitizeHtml(marked.parse(articleData.article.body))"
-				/>
+				<div class="text-h6 text-weight-light" :class="$style.articleContent" v-html="articleHTML" />
 
 				<footer class="q-pt-lg flex row items-center justify-between">
 					<ArticleTags :tag-list="articleData.article.tagList" />
@@ -59,15 +64,23 @@ const { data: articleData, error: articleError, pending: articlePending } = awai
 			<div class="">
 				<p class="flex row items-center justify-start q-pb-lg">
 					<span class="text-h5 q-pr-md">Responses</span>
-					<span class="number text-h6">25</span>
+					<span class="number text-h6">{{ commentsData?.comments.length ?? 0 }}</span>
 				</p>
 			</div>
 			<AddComment />
 
-			<Comments />
-			<Comments />
-			<Comments />
-			<Comments />
+			<template v-if="commentsData && commentsData.comments && !commentsPending">
+				<Comments
+					v-for="(item, index) in commentsData.comments"
+					:key="index"
+					:comment="item"
+					:slug="articleData.article.slug"
+					@on-after-delete="(id) => {
+						commentsData = { comments: commentsData!.comments.filter((item) => item.id !== id)};
+					}"
+				/>
+			</template>
+			<ErrorBox v-if="commentsError" :error="commentsError" :msg="commentsError?.message" />
 		</div>
 	</template>
 
