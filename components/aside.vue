@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { fasHashtag } from '@quasar/extras/fontawesome-v5';
+import { getPopularTags } from '~/services';
+
+const { data, error } = await getPopularTags();
 </script>
 
 <template>
@@ -10,21 +13,24 @@ import { fasHashtag } from '@quasar/extras/fontawesome-v5';
 				<MedalIcon />
 			</h6>
 
-			<div v-if="true" class="flex row wrap q-gutter-sm">
+			<div v-if="data && data.tags" class="flex row wrap q-gutter-sm">
 				<q-btn
+					v-for="(item, index) in data.tags"
+					:key="index"
 					rounded
 					no-caps
 					unelevated
 					size="md"
 					color="dark"
 					text-color="white"
-					label="implementations"
+					:label="item"
 					:icon="fasHashtag"
 					class="text-weight-regular"
+					:to="`/?tag=${item}`"
 				/>
 			</div>
 
-			<ErrorBox v-else />
+			<ErrorBox v-else :error="error" :msg="error?.message" />
 		</section>
 	</aside>
 </template>
