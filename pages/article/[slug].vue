@@ -69,7 +69,17 @@ const articleHTML = computed(() => {
 					<span class="number text-h6">{{ commentsData?.comments.length ?? 0 }}</span>
 				</p>
 			</div>
-			<AddComment />
+
+			<AddComment
+				:slug="articleData.article.slug"
+				@on-after-create="
+					(newDate) => {
+						if (!commentsData || !commentsData.comments) return;
+
+						commentsData = { comments: [...commentsData.comments, newDate] };
+					}
+				"
+			/>
 
 			<template v-if="commentsData && commentsData.comments && !commentsPending">
 				<Comments
