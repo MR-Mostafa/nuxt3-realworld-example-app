@@ -6,7 +6,9 @@ import { fasChevronLeft, fasChevronRight } from '@quasar/extras/fontawesome-v5';
 	<q-header reveal class="bg-dark text-white no-border" :class="$style.header">
 		<q-toolbar>
 			<q-avatar square size="48px">
-				<img src="~/assets/images/logo.png" width="48" height="48" alt="Realworld Logo" />
+				<NuxtLink to="/" class="block full-width full-height">
+					<img src="~/assets/images/logo.png" width="48" height="48" alt="Realworld Logo" />
+				</NuxtLink>
 			</q-avatar>
 
 			<q-toolbar-title shrink class="column">
