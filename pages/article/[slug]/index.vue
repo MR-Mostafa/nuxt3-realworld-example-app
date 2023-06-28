@@ -1,11 +1,14 @@
 <!-- eslint-disable @typescript-eslint/no-non-null-assertion -->
 <script setup lang="ts">
 import { computed, useRoute } from '#imports';
+import { fasEdit } from '@quasar/extras/fontawesome-v5';
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 import { getArticleComments, getSingleArticle } from '~/services';
+import { authState } from '~/store';
 
 const route = useRoute();
+const auth = authState();
 
 const slug = computed(() => {
 	return route.params.slug as string;
@@ -48,6 +51,17 @@ const articleHTML = computed(() => {
 							/>
 
 							<Follow class="q-ml-md" :user-name="articleData.article.author.username" :is-follow="articleData.article.author.following" />
+
+							<template v-if="auth.get.value && auth.get.value.username === articleData.article.author.username">
+								<q-btn
+									:icon="fasEdit"
+									label="Edit Article"
+									no-caps
+									:to="`/article/${articleData.article.slug}/edit`"
+									color="teal-5"
+									class="q-ml-md"
+								/>
+							</template>
 						</div>
 					</div>
 				</header>
