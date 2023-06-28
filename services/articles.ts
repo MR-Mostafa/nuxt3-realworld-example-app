@@ -50,3 +50,7 @@ export const getSingleArticle = (slug: string) => {
 export const createNewArticle = (data: NewArticle) => {
 	return useAPI<Article>('/articles', { method: 'POST', body: { article: data } });
 };
+
+export const updateArticle = (slug: string, data: NewArticle) => {
+	return useAPI<Article>(`/articles/${slug}`, { method: 'PUT', body: { article: data } });
+};
